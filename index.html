@@ -980,6 +980,17 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
   .h-copy{padding-top:100px!important}
 }
 @media (max-width:440px){.secnav{left:8px;right:8px;transform:translateY(170%);gap:6px}.secnav.show{transform:none}.tb{flex:1;min-width:0}.tb a{flex:1 1 0;min-width:0!important;padding:0 2px}.tb a span{overflow:hidden;text-overflow:clip;max-width:100%}.tb-talk{flex:none}}
+/* ---------- case images: instant blurred placeholder, holographic reveal ---------- */
+.cs-hero::before{content:"";position:absolute;inset:-20px;background:var(--ph) center/cover no-repeat;filter:blur(18px) saturate(1.2);transform:scale(1.1);z-index:0}
+.cs-hero img{z-index:0;opacity:0;transition:opacity .2s}
+.cs-hero img.in{opacity:1;animation:holoIn 1.4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes holoIn{0%{opacity:0;filter:hue-rotate(-60deg) saturate(2.4) brightness(1.5) contrast(1.2)}25%{opacity:.85;filter:hue-rotate(40deg) saturate(2) brightness(1.3)}55%{filter:hue-rotate(-20deg) saturate(1.5) brightness(1.1)}100%{opacity:1;filter:none}}
+.cs-holo{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;mix-blend-mode:screen;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,80,200,.55) 40%,rgba(255,230,90,.5) 45%,rgba(60,255,208,.6) 50%,rgba(80,170,255,.55) 55%,rgba(160,90,255,.55) 60%,transparent 70%) 0 0/300% 100% no-repeat,
+  repeating-linear-gradient(0deg,rgba(255,255,255,.09) 0 1px,transparent 1px 4px)}
+.cs-hero img.in+.cs-holo{animation:holoSweep 1.5s cubic-bezier(.4,0,.2,1) both}
+@keyframes holoSweep{0%{opacity:1;background-position:100% 0,0 0}70%{opacity:.9}100%{opacity:0;background-position:-10% 0,0 0}}
+@media (prefers-reduced-motion:reduce){.cs-hero img.in{animation:none}.cs-hero img.in+.cs-holo{animation:none}}
 </style>
 </head>
 <body class="light">
@@ -1088,7 +1099,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
   </div>
   <section class="cases" id="cases" aria-label="Case studies">
     <article class="cs" id="case-gfn">
-      <div class="cs-hero"><img src="img/cloud.webp" alt="" loading="lazy">
+      <div class="cs-hero" style="--ph:url(data:image/webp;base64,UklGRt4AAABXRUJQVlA4INIAAABQBACdASoYABAAPu1iqU2ppaOiMAgBMB2JbACdH8AgpA2ESrnNtRs/nY0MAP7ys8NG4x6/JGI09Pwsipd5eOKJ7ox/aYpOP8ynasr9vYno8TQFKUEYaB/AvJW+JvcJwAh1Ik5rk5+u5AbK4s8JPeYF9uJRvkX/MlswZeMK+VhfswEonPgwWB14iiKzgYHV87TT0e8+lYQClyG8ULiSB5wnVltg8D6qYPttWPw4i54YurzIpK2QKHbhokkfVvReeXGxnohk/eix16Ik2O5yus8AAAA=)"><img src="img/cloud.webp" srcset="img/cloud-m.webp 900w, img/cloud.webp 1600w" sizes="100vw" alt="" decoding="async" fetchpriority="low"><i class="cs-holo" aria-hidden="true"></i>
         <div class="cs-over"><span class="cs-n">01</span><span class="cs-k">Zain Jordan · 2017–2023</span><h3>Cloud gaming, before Jordan had seen it</h3><p>Bringing NVIDIA GeForce NOW to a market that had never seen cloud gaming, and making it as easy to pay for as a phone top-up.</p></div>
       </div>
       <div class="cs-body">
@@ -1102,7 +1113,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
       </div>
     </article>
     <article class="cs" id="case-ug">
-      <div class="cs-hero"><img src="img/latency.webp" alt="" loading="lazy">
+      <div class="cs-hero" style="--ph:url(data:image/webp;base64,UklGRvQAAABXRUJQVlA4IOgAAADwBACdASoYABAAPu1iqU2ppaOiMAgBMB2JbACsDBQCvA9yr2AWt09gIlFw8wY3d/AA/uabxsQpHyAwvHfQFZBugaqYd1f+mTgGVgnE6QfZgnd3Vd9YKhDdx3PjzRPM8X0Y7V5gNuPOmE+TgSd+NR4AIsLX/LBBuUUO5VKxeksuZYX3lkWYnQXjTF89UbkZyKdLag5WfhfuOzFG4K//1MlK2f2pr3p9pVtKangXFNKJYEL4PCaheoInV9waw9+v/H/z9h2Dv/+KHcZ/k5MVEiLvjOkADWvYCf+zkyko56t1s3Y/FNJGAAAA)"><img src="img/latency.webp" srcset="img/latency-m.webp 900w, img/latency.webp 1600w" sizes="100vw" alt="" decoding="async" fetchpriority="low"><i class="cs-holo" aria-hidden="true"></i>
         <div class="cs-over"><span class="cs-n">02</span><span class="cs-k">Umniah · 2023–2025</span><h3>Selling ping, not megabits</h3><p>Jordan's first fiber package built for gamers, sold on latency instead of speed, with a promise in writing.</p></div>
       </div>
       <div class="cs-body">
@@ -1116,7 +1127,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
       </div>
     </article>
     <article class="cs" id="case-eshop">
-      <div class="cs-hero"><img src="img/funnel.webp" alt="" loading="lazy">
+      <div class="cs-hero" style="--ph:url(data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAADwAwCdASoYABAAPu1iqU2ppaQiMAgBMB2JagAD5FGsU8zG3FM6fxgAAP7yq8z2bHeSh6HmGn+ZnbumRPy40PVyfWrviZLaDEptkHnaYQ2Ulc2oGANkHXA3AYauhsoX3bF2P4H811slIxg0jWOfmUiFwK2HcuchzHrtjoudiw+Yafd/gAA=)"><img src="img/funnel.webp" srcset="img/funnel-m.webp 900w, img/funnel.webp 1600w" sizes="100vw" alt="" decoding="async" fetchpriority="low"><i class="cs-holo" aria-hidden="true"></i>
         <div class="cs-over"><span class="cs-n">03</span><span class="cs-k">Umniah · 2023–2025</span><h3>Finding where the eShop leaked</h3><p>An eShop with plenty of traffic and almost no buyers, rebuilt around data instead of opinions.</p></div>
       </div>
       <div class="cs-body">
@@ -1130,7 +1141,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
       </div>
     </article>
     <article class="cs" id="case-pay">
-      <div class="cs-hero"><img src="img/instal.webp" alt="" loading="lazy">
+      <div class="cs-hero" style="--ph:url(data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAACwBACdASoYABAAPu1iqU2ppaOiMAgBMB2JbACdMoRgC3BxgAERrRnVqTtdcQAAAP7c4bTAi1A7LCvymXTt1/JHrVaMl/YCt3unPHZ/IJAVug3YI1amL0g5FAxZEIln5LliqrCVFngdBZjklm8PAucoUy+w558xX8egS8FpURy7x4guALdUebozUeIReU+A4uaTjW9P4jCPtX3vUxy3Qz/4MBv3jY4V/6FGsawBL8zZf9OD+sAAAA==)"><img src="img/instal.webp" srcset="img/instal-m.webp 900w, img/instal.webp 1600w" sizes="100vw" alt="" decoding="async" fetchpriority="low"><i class="cs-holo" aria-hidden="true"></i>
         <div class="cs-over"><span class="cs-n">04</span><span class="cs-k">Umniah × Arab Bank · 2023–2025</span><h3>A flagship phone, by the month</h3><p>Turning a full-price phone into a monthly number people already think in, by plugging a bank's plan into the checkout.</p></div>
       </div>
       <div class="cs-body">
@@ -1144,7 +1155,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
       </div>
     </article>
     <article class="cs" id="case-eand">
-      <div class="cs-hero"><img src="img/enterprise.webp" alt="" loading="lazy">
+      <div class="cs-hero" style="--ph:url(data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAACQBACdASoYABAAPu1iqU2ppaOiMAgBMB2JbAC06ywTmYreqtVqIw872fg3yAAA/vLfNEXWFiQ/nhdtEVYPltQOO4FZjE18c8nVsHW97mYrhQV8235b8XxnbtUBMmQxPe4Au1s7RrY42cBHv7LGCeHqJxnhoHpbbU1EXMGgB1Qeqsc+TM6sD8Wh0tIxUuzp1pmfxZsu2suqz9J2WMA/TNQdR79vvY3FH6Tol9N4u0/SeiC77X3JedjRUPDHhSHH5wFD8QkfruLdVb3FXfQACHEOx8AAAA==)"><img src="img/enterprise.webp" srcset="img/enterprise-m.webp 900w, img/enterprise.webp 1600w" sizes="100vw" alt="" decoding="async" fetchpriority="low"><i class="cs-holo" aria-hidden="true"></i>
         <div class="cs-over"><span class="cs-n">05</span><span class="cs-k">Etisalat by e&amp; · 2025–now</span><h3>The unglamorous middle of 5G</h3><p>Turning 5G network capabilities into services a business can buy, set up and switch on without a week of manual work.</p></div>
       </div>
       <div class="cs-body">
@@ -1763,6 +1774,17 @@ const HS={targetY:()=>null};
   const imgs=[...document.querySelectorAll(".cs-hero img")];
   function upd(){ const vh=innerHeight; imgs.forEach(im=>{ const r=im.parentElement.getBoundingClientRect(); if(r.bottom<0||r.top>vh) return; const k=Math.min(1,Math.max(0,(vh-r.top)/(vh+r.height))); im.style.transform=`scale(${(1.14-k*.14).toFixed(4)}) translateY(${((k-.5)*-6).toFixed(2)}%)`; }); }
   addEventListener("scroll",upd,{passive:true}); addEventListener("resize",upd); upd();
+})();
+
+
+/* case images: reveal with a holographic sweep once loaded and on screen */
+(function(){
+  const imgs=[...document.querySelectorAll(".cs-hero img")];
+  const ready=im=>im.complete&&im.naturalWidth>0;
+  const reveal=im=>{ if(ready(im)) im.classList.add("in"); else im.addEventListener("load",()=>im.classList.add("in"),{once:true}); };
+  if(!("IntersectionObserver" in window)){ imgs.forEach(reveal); return; }
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ reveal(e.target); io.unobserve(e.target); } }),{threshold:.2});
+  imgs.forEach(im=>io.observe(im));
 })();
 
 /* ================= HS mark: self-build, impossible reveal, endless current (three.js) ================= */
