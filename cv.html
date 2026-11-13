@@ -290,5 +290,28 @@ aside section+section{margin-top:28px}
 </article>
 <script>
 </script>
+<script>
+/* ---------- visitor analytics (Umami: no cookies, country/city, referrer, events) ---------- */
+window.UMAMI_ID="";   // paste the Website ID from cloud.umami.is here
+window.HS_Q=window.HS_Q||[];
+window.track=function(name,data){ try{ if(window.umami&&umami.track) umami.track(name,data); else HS_Q.push([name,data]); }catch(e){} };
+(function(){
+  if(!window.UMAMI_ID) return;
+  const s=document.createElement("script"); s.defer=true; s.src="https://cloud.umami.is/script.js"; s.dataset.websiteId=UMAMI_ID;
+  s.onload=()=>{ const flush=()=>{ if(window.umami&&umami.track){ HS_Q.splice(0).forEach(([n,d])=>umami.track(n,d)); } else setTimeout(flush,300); }; flush(); };
+  document.head.appendChild(s);
+})();
+/* what visitors click */
+document.addEventListener("click",e=>{
+  const a=e.target.closest("a,button"); if(!a) return;
+  const href=a.getAttribute("href")||"", txt=(a.getAttribute("aria-label")||a.textContent||"").trim().replace(/\s+/g," ").slice(0,40);
+  if(/dark-deco/.test(href)) track("Play Dark Deco",{from:a.id==="ddmPlay"?"pop-up":"site"});
+  else if(/shouldiwatchit/.test(href)) track("Open Should I Watch It");
+  else if(/linkedin\.com/.test(href)) track("LinkedIn click",{button:txt});
+  else if(/cv\.pdf/.test(href)) track("Download CV PDF");
+  else if(/cv\.html/.test(href)) track("Open CV",{button:txt});
+  else if(a.closest(".tb,.tb-talk")) track("Tab bar",{tab:txt});
+},true);
+</script>
 </body>
 </html>

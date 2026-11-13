@@ -1217,6 +1217,27 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
+/* ---------- visitor analytics (Umami: no cookies, country/city, referrer, events) ---------- */
+window.UMAMI_ID="";   // paste the Website ID from cloud.umami.is here
+window.HS_Q=window.HS_Q||[];
+window.track=function(name,data){ try{ if(window.umami&&umami.track) umami.track(name,data); else HS_Q.push([name,data]); }catch(e){} };
+(function(){
+  if(!window.UMAMI_ID) return;
+  const s=document.createElement("script"); s.defer=true; s.src="https://cloud.umami.is/script.js"; s.dataset.websiteId=UMAMI_ID;
+  s.onload=()=>{ const flush=()=>{ if(window.umami&&umami.track){ HS_Q.splice(0).forEach(([n,d])=>umami.track(n,d)); } else setTimeout(flush,300); }; flush(); };
+  document.head.appendChild(s);
+})();
+/* what visitors click */
+document.addEventListener("click",e=>{
+  const a=e.target.closest("a,button"); if(!a) return;
+  const href=a.getAttribute("href")||"", txt=(a.getAttribute("aria-label")||a.textContent||"").trim().replace(/\s+/g," ").slice(0,40);
+  if(/dark-deco/.test(href)) track("Play Dark Deco",{from:a.id==="ddmPlay"?"pop-up":"site"});
+  else if(/shouldiwatchit/.test(href)) track("Open Should I Watch It");
+  else if(/linkedin\.com/.test(href)) track("LinkedIn click",{button:txt});
+  else if(/cv\.pdf/.test(href)) track("Download CV PDF");
+  else if(/cv\.html/.test(href)) track("Open CV",{button:txt});
+  else if(a.closest(".tb,.tb-talk")) track("Tab bar",{tab:txt});
+},true);
 /* always start at the top: no restored scroll position, no deep-link jump */
 if("scrollRestoration" in history) history.scrollRestoration="manual";
 /* LinkedIn campaign: any of ?play, ?game, ?darkdeco, ?dd (any value) or #play opens the Dark Deco pop-up */
@@ -1274,7 +1295,7 @@ function route(){}
   dock.innerHTML=BUILDS.map((b,i)=>`${b.sep?'<span class="sep" aria-hidden="true"></span>':''}<button type="button" class="appi" data-i="${i}" aria-label="${b.n}">${icon(b)}<span class="tip">${b.n}</span></button>`).join("");
   const btns=[...dock.querySelectorAll(".appi")];
   function open(i,anim){
-    const b=BUILDS[i];
+    const b=BUILDS[i]; if(anim) track("AI lab: open app",{app:b.n});
     btns.forEach((x,k)=>{ x.classList.toggle("on",k===i); x.setAttribute("aria-pressed",k===i); });
     const prev=b.prev==="PHONE_SWI"?SWI_PHONE:b.prev||`<div class="poster" style="background:${IC[b.id].bg}">${IC[b.id].svg}</div>`;
     win.innerHTML=`<div class="awin-bar"><span><i></i><i></i><i></i></span><b>${b.n}</b><span></span></div>
@@ -1332,7 +1353,7 @@ if(!reduce && "IntersectionObserver" in window){
   }
   function explode(){ if(exploded) return; exploded=true; if(reduce){ ex=1; paint(); return; }
     const t0=performance.now(); (function f(now){ ex=Math.min(1,(now-t0)/650); ex=1-Math.pow(1-ex,3); paint(); if(ex<1) requestAnimationFrame(f); })(t0); }
-  function setK(n,fromTrack){ n=Math.max(0,Math.min(N-1,n)); if(n===k) return; k=n; stepAt=performance.now(); paint();
+  function setK(n,fromTrack){ n=Math.max(0,Math.min(N-1,n)); if(n===k) return; k=n; track("What I do: layer",{layer:["Network","Product","Channel","AI lab"][k]}); stepAt=performance.now(); paint();
     if(MOB()&&!fromTrack){ const it=items[k]; track.scrollTo({left:it.offsetLeft-track.offsetLeft,behavior:reduce?"auto":"smooth"}); } }
   /* phones: the layers are a sideways carousel, one card per swipe; the stack follows */
   let tT=0; track.addEventListener("scroll",()=>{ if(!MOB()) return; clearTimeout(tT); tT=setTimeout(()=>{ const w=items[0].offsetWidth+12; setK(Math.round(track.scrollLeft/w),true); },60); },{passive:true});
@@ -1396,16 +1417,25 @@ if(!reduce && "IntersectionObserver" in window){
   const close=()=>{ m.classList.remove("on"); document.documentElement.classList.remove("ddm-lock"); setTimeout(()=>{ m.hidden=true; },350);
     try{ const u=new URL(location.href); ["play","game","darkdeco","dd"].forEach(k=>u.searchParams.delete(k)); history.replaceState(null,"",u.pathname+u.search); }catch(e){} };
   let shown=false;
-  const show=()=>{ if(shown) return; shown=true; m.hidden=false; document.documentElement.classList.add("ddm-lock");
+  const show=()=>{ if(shown) return; shown=true; track("Dark Deco pop-up shown"); m.hidden=false; document.documentElement.classList.add("ddm-lock");
     requestAnimationFrame(()=>requestAnimationFrame(()=>m.classList.add("on")));
     setTimeout(()=>document.getElementById("ddmPlay").focus({preventScroll:true}),400); };
   /* open once the logo animation has landed */
   if(window.__introDone||!document.getElementById("intro")) setTimeout(show,300);
   else { addEventListener("hsintrodone",()=>setTimeout(show,500),{once:true}); setTimeout(show,9000); }
   document.getElementById("ddmX").addEventListener("click",close);
-  document.getElementById("ddmMore").addEventListener("click",close);
+  document.getElementById("ddmMore").addEventListener("click",()=>{ track("Pop-up: explore my work"); close(); });
   m.addEventListener("click",e=>{ if(e.target===m) close(); });
   addEventListener("keydown",e=>{ if(e.key==="Escape"&&!m.hidden) close(); });
+})();
+
+/* which sections and case studies people actually reach, and how far they scroll */
+(function(){
+  const names={what:"What I do","case-gfn":"Case: GeForce NOW","case-ug":"Case: UGaming","case-eshop":"Case: eShop","case-pay":"Case: Instalments","case-eand":"Case: 5G at e&",career:"Career",builds:"AI lab",talk:"Let's talk"};
+  if("IntersectionObserver" in window){ const seen=new Set(); const io=new IntersectionObserver(es=>es.forEach(e=>{ const id=e.target.id; if(e.isIntersecting&&!seen.has(id)){ seen.add(id); track("Viewed: "+names[id]); io.unobserve(e.target); } }),{threshold:.35});
+    Object.keys(names).forEach(id=>{ const el=document.getElementById(id); if(el) io.observe(el); }); }
+  const marks=[25,50,75,100], hit=new Set();
+  addEventListener("scroll",()=>{ const p=Math.round((scrollY+innerHeight)/document.documentElement.scrollHeight*100); marks.forEach(m=>{ if(p>=m&&!hit.has(m)){ hit.add(m); track("Scroll depth",{percent:m}); } }); },{passive:true});
 })();
 /* career path lights up as you scroll */
 const pathEls=[...document.querySelectorAll("#path li")];
@@ -1818,7 +1848,7 @@ const HS={targetY:()=>null};
     setTimeout(()=>{ stage.style.transition="none"; stage.style.transform="none"; stage.style.position="absolute"; stage.style.left="0"; stage.style.top="0"; stage.style.width="100%"; stage.style.height="100%";
       stage.style.width="100%"; slot.appendChild(stage); HFIX=0; host=slot; fit(slot); view(ISO_AZ,ISO_EL); done(); }, fast?0:850);
   }
-  document.getElementById("introSkip").addEventListener("click",()=>{ phase="skip"; });
+  document.getElementById("introSkip").addEventListener("click",()=>{ phase="skip"; track("Skipped logo intro"); });
   intro.addEventListener("click",e=>{ if(e.target===intro) phase="skip"; });
   const hero=document.getElementById("hero"); let last=performance.now();
   function frame(now){
