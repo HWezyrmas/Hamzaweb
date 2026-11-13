@@ -1395,9 +1395,13 @@ if(!reduce && "IntersectionObserver" in window){
   const m=document.getElementById("ddm"); if(!m) return;
   const close=()=>{ m.classList.remove("on"); document.documentElement.classList.remove("ddm-lock"); setTimeout(()=>{ m.hidden=true; },350);
     try{ const u=new URL(location.href); ["play","game","darkdeco","dd"].forEach(k=>u.searchParams.delete(k)); history.replaceState(null,"",u.pathname+u.search); }catch(e){} };
-  m.hidden=false; document.documentElement.classList.add("ddm-lock");
-  requestAnimationFrame(()=>requestAnimationFrame(()=>m.classList.add("on")));
-  setTimeout(()=>document.getElementById("ddmPlay").focus({preventScroll:true}),400);
+  let shown=false;
+  const show=()=>{ if(shown) return; shown=true; m.hidden=false; document.documentElement.classList.add("ddm-lock");
+    requestAnimationFrame(()=>requestAnimationFrame(()=>m.classList.add("on")));
+    setTimeout(()=>document.getElementById("ddmPlay").focus({preventScroll:true}),400); };
+  /* open once the logo animation has landed */
+  if(window.__introDone||!document.getElementById("intro")) setTimeout(show,300);
+  else { addEventListener("hsintrodone",()=>setTimeout(show,500),{once:true}); setTimeout(show,9000); }
   document.getElementById("ddmX").addEventListener("click",close);
   document.getElementById("ddmMore").addEventListener("click",close);
   m.addEventListener("click",e=>{ if(e.target===m) close(); });
@@ -1733,7 +1737,7 @@ const HS={targetY:()=>null};
 /* ================= HS mark: self-build, impossible reveal, endless current (three.js) ================= */
 (function(){
   const intro=document.getElementById("intro"), stage=document.getElementById("introStage"), flashEl=document.getElementById("introFlash"), slot=document.getElementById("hLogo");
-  const done=()=>{ intro.classList.add("gone"); document.documentElement.classList.remove("intro-lock"); if(typeof lenis!=="undefined"&&lenis) lenis.scrollTo(0,{immediate:true}); scrollTo(0,0); setTimeout(()=>intro.remove(),600); };
+  const done=()=>{ window.__introDone=true; dispatchEvent(new Event("hsintrodone")); intro.classList.add("gone"); document.documentElement.classList.remove("intro-lock"); if(typeof lenis!=="undefined"&&lenis) lenis.scrollTo(0,{immediate:true}); scrollTo(0,0); setTimeout(()=>intro.remove(),600); };
   if(!window.THREE){ done(); return; }
   const T=THREE;
   /* geometry in logo space (X right-down, Y left-down, Z up) -> three (x=X, y=Z, z=Y) */
@@ -1797,7 +1801,7 @@ const HS={targetY:()=>null};
   const reduceM=reduce;
   let t0=performance.now(), phase="build", landed=false, pulseT=0;
   const BUILD=1.25, TURN=1.0;
-  try{ if(DD_CAMPAIGN||sessionStorage.getItem("hsIntro")==="1") throw 0; sessionStorage.setItem("hsIntro","1"); }catch(e){ if(e===0){ phase="skip"; } }
+  /* the intro plays on every load, campaign visits included */
   if(reduceM) phase="skip";
   document.documentElement.classList.add("intro-lock");
   function land(instant){
