@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hamza Sein, CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Inter+Tight:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#06031a; --night-2:#120a3a; --uv:#5200ff; --mint:#3cffd0; --ink:#0d0d10; --mute:#5d5d66; --rule:#e4e3ea; --paper:#fff; --wash:#f4f3fa;
+  --f-mast:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-display:"Bricolage Grotesque","Arial Narrow",sans-serif;
+  --f-body:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#e9e8f0;color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.5;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--uv);outline-offset:3px}
+
+/* top bar (screen only) */
+.bar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px clamp(14px,3vw,32px);background:rgba(233,232,240,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.bar a,.bar button{font-family:var(--f-display);font-weight:600;font-size:14.5px;text-decoration:none;border-radius:999px;padding:8px 16px;border:1px solid #c9c7d6;background:#fff;color:var(--ink);cursor:pointer}
+.bar button,.bar a.dl{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:700}
+.bar button:hover,.bar a.dl:hover{background:var(--uv);border-color:var(--uv)}
+
+.sheet{max-width:1080px;margin:8px auto 48px;background:var(--paper);box-shadow:0 30px 80px -30px rgba(20,8,70,.35);overflow:hidden}
+
+/* head band */
+.head{position:relative;background:var(--night);color:#fff;padding:44px clamp(22px,5vw,60px) 38px;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;overflow:hidden;isolation:isolate}
+.head::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 120% at 92% 0%,rgba(82,0,255,.55),transparent 60%),radial-gradient(40% 90% at 0% 100%,rgba(60,255,208,.14),transparent 70%)}
+.mark{position:relative;width:104px;aspect-ratio:433/500}
+.mark img{width:100%;height:100%;display:block;filter:drop-shadow(0 0 6px rgba(60,255,208,.45)) drop-shadow(0 0 18px rgba(110,50,255,.5))}
+.mark .sheen{position:absolute;inset:0;-webkit-mask:url("img/hs-mark-dark.svg") center/100% 100% no-repeat;mask:url("img/hs-mark-dark.svg") center/100% 100% no-repeat;
+  background:linear-gradient(115deg,transparent 30%,#ff6bd5 40%,#ffe56b 45%,#6bffb8 50%,#6bc8ff 55%,#b26bff 60%,transparent 70%) 0 0/300% 100% no-repeat;mix-blend-mode:screen;opacity:.9;animation:sheen 6s ease-in-out infinite}
+@keyframes sheen{0%,55%{background-position:100% 0}85%,100%{background-position:0 0}}
+.who h1{margin:0;font-family:var(--f-mast);font-weight:900;font-size:clamp(54px,8vw,92px);line-height:.84;letter-spacing:.005em;text-transform:uppercase}
+.who p{margin:12px 0 0;font-family:var(--f-display);font-weight:500;font-size:19px;color:#cfc8ff}
+.links{display:flex;flex-direction:column;gap:8px;align-items:flex-end;font-family:var(--f-display);font-size:14.5px}
+.links span{color:#a59ee0}
+.links a{text-decoration:none;border-bottom:1px solid rgba(255,255,255,.3)}
+.links a:hover{color:var(--mint);border-color:var(--mint)}
+
+/* summary strip */
+.lede{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);padding:34px clamp(22px,5vw,60px);border-bottom:1px solid var(--rule)}
+.lede p{margin:0;font-size:19.5px;line-height:1.55;max-width:60ch}
+.figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-content:center}
+.figs div{background:var(--wash);border-radius:10px;padding:14px 12px}
+.figs b{display:block;font-family:var(--f-mast);font-weight:900;font-size:36px;line-height:.85;color:var(--uv);font-variant-numeric:tabular-nums}
+.figs span{display:block;margin-top:6px;font-family:var(--f-display);font-size:13px;line-height:1.3;color:var(--mute)}
+
+/* body grid */
+.body{display:grid;grid-template-columns:minmax(0,1fr) 300px}
+main{padding:30px clamp(22px,5vw,60px) 40px;border-right:1px solid var(--rule)}
+aside{padding:30px 28px 40px;background:#fbfbfd}
+h2{margin:0 0 18px;font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:10px;height:10px;background:var(--mint);box-shadow:3px 3px 0 var(--uv)}
+section+section{margin-top:34px}
+
+.job{display:grid;grid-template-columns:132px minmax(0,1fr);gap:18px;padding:18px 0;border-top:1px solid var(--rule)}
+.job:first-of-type{border-top:0;padding-top:0}
+.when{font-family:var(--f-mono);font-size:12.5px;line-height:1.5;color:var(--mute);padding-top:4px}
+.when b{display:block;font-weight:500;color:var(--ink)}
+.job h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.25}
+.job h3 span{font-weight:500;color:var(--mute)}
+.job .role{margin:2px 0 10px;font-family:var(--f-display);font-weight:600;font-size:15px;color:var(--uv)}
+.job ul{margin:0;padding-left:18px}
+.job li{margin:0 0 6px;font-size:16.5px;line-height:1.5}
+.job li::marker{color:var(--uv)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips i{font-style:normal;font-family:var(--f-display);font-weight:600;font-size:13px;padding:3px 10px;border-radius:999px;background:#e9fff8;color:#00523f;border:1px solid #b6f5e3}
+.prior{margin-top:4px;font-size:16px;color:var(--mute)}
+
+.builds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.build{border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
+.build h4{margin:0 0 4px;font-family:var(--f-display);font-weight:700;font-size:16.5px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.build h4 em{font-style:normal;font-family:var(--f-display);font-weight:600;font-size:12px;color:var(--uv);white-space:nowrap}
+.build p{margin:0;font-size:15.5px;line-height:1.45;color:#2e2e36}
+.build a{text-decoration-color:rgba(82,0,255,.4)}
+
+aside h2{font-size:18px}
+aside section+section{margin-top:28px}
+.skills{margin:0;padding:0;list-style:none}
+.skills li{padding:9px 0;border-top:1px solid var(--rule);font-size:15.5px;line-height:1.4}
+.skills li:first-child{border-top:0;padding-top:0}
+.skills b{display:block;font-family:var(--f-display);font-weight:700;font-size:13.5px;color:var(--uv);margin-bottom:2px}
+.cert{margin:0;padding:0;list-style:none}
+.cert li{font-size:15.5px;line-height:1.4;margin-bottom:9px}
+.cert span{display:block;font-family:var(--f-display);font-size:13px;color:var(--mute)}
+.edu p{margin:0;font-size:15.5px;line-height:1.45}
+.edu span{display:block;font-family:var(--f-display);font-size:13px;color:var(--mute)}
+
+.foot{background:var(--night);color:#b9b2ee;padding:16px clamp(22px,5vw,60px);display:flex;justify-content:space-between;gap:12px;font-family:var(--f-display);font-size:14px}
+.foot a{color:var(--mint);text-decoration:none}
+
+@media screen and (max-width:860px){
+  .head{grid-template-columns:auto 1fr;gap:18px;padding:30px 20px}
+  .links{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px}
+  .mark{width:72px}
+  .lede{grid-template-columns:1fr;padding:26px 20px}
+  .lede p{font-size:18px}
+  .body{grid-template-columns:1fr}
+  main{border-right:0;padding:26px 20px 30px}
+  aside{padding:26px 20px 34px;border-top:1px solid var(--rule)}
+  .job{grid-template-columns:1fr;gap:4px}
+  .builds{grid-template-columns:1fr}
+  .sheet{margin:0}
+}
+@media screen and (max-width:420px){.figs b{font-size:26px}.figs{gap:8px}.figs div{padding:12px 10px}.who h1{font-size:50px}}
+@media (prefers-reduced-motion:reduce){.mark .sheen{animation:none;opacity:0}}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;font-size:10.5pt}
+  .bar,.mark .sheen{display:none}
+  .sheet{max-width:none;margin:0;box-shadow:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .head{padding:22px 28px}
+  .who h1{font-size:54px}
+  .who p{font-size:14px}
+  .mark{width:64px}
+  .lede{padding:16px 28px;gap:24px}
+  .lede p{font-size:12pt}
+  .figs b{font-size:21px}
+  .figs div{padding:8px 10px}
+  .lede{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+  .job .role{margin-bottom:5px}
+  .chips{margin-top:5px}
+  .chips i{font-size:8.5pt;padding:1px 8px}
+  .builds{gap:8px}
+  .foot{padding:8px 28px}
+  .when{font-size:8.5pt}
+  .skills li{padding:6px 0}
+  .body{grid-template-columns:minmax(0,1fr) 210px}
+  main{padding:16px 22px 16px 28px}
+  aside{padding:16px 22px}
+  .job{grid-template-columns:96px minmax(0,1fr);gap:12px;padding:10px 0}
+  .job h3,.job .role{break-after:avoid}
+  .job li{break-inside:avoid}
+  h2{break-after:avoid}
+  .job li{font-size:10pt;margin-bottom:3px}
+  .job h3{font-size:12.5pt}
+  .build{break-inside:avoid;padding:8px 10px}
+  .build p,.skills li,.cert li,.edu p{font-size:9.5pt}
+  section+section{margin-top:18px}
+  h2{font-size:13pt;margin-bottom:10px}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <a href="index.html">Back to the site</a>
+  <a class="dl" id="save" href="cv.pdf" download="Hamza_Sein_CV.pdf" target="_blank" rel="noopener">Download PDF</a>
+</div>
+
+<article class="sheet">
+  <header class="head">
+    <div class="mark" aria-hidden="true"><img src="img/hs-mark-dark.svg" alt=""><span class="sheen"></span></div>
+    <div class="who">
+      <h1>Hamza Sein</h1>
+      <p>Product manager, 0 to 1</p>
+    </div>
+    <div class="links">
+      <span>Dubai, UAE</span>
+      <a href="https://www.linkedin.com/in/hamza-wazarmas-sein-8108b318a" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="index.html">Portfolio</a>
+    </div>
+  </header>
+
+  <div class="lede">
+    <p>Product manager with nine years across MENA telecoms at e&amp;, Umniah and Zain. Most of my work has been 0 to 1: taking new products from the first business request to launch and growing them after, through roadmaps, requirements, partner and vendor delivery, release quality and the numbers that follow. I also run small AI experiments with Claude to stay close to the technology and sharpen my product judgement.</p>
+    <div class="figs">
+      <div><b>9</b><span>years in product</span></div>
+      <div><b>0.7→1.3%</b><span>eShop conversion</span></div>
+      <div><b>+120%</b><span>internet revenue</span></div>
+    </div>
+  </div>
+
+  <div class="body">
+    <main>
+      <section>
+        <h2>Experience</h2>
+
+        <div class="job">
+          <div class="when"><b>Apr 2025 to now</b>Dubai</div>
+          <div>
+            <h3>e&amp; UAE</h3>
+            <p class="role">Product Manager, Product House</p>
+            <ul>
+              <li>Own the roadmap for enterprise products: 5G network slicing, IoT and connected things, Mission Critical Communications (push to talk and push to video) and Drones and Robotics as a Service.</li>
+              <li>Shaping a new computer vision product on the 5G private network: a base account with AI licence add-ons per use case, running on cameras and AI edge devices.</li>
+              <li>Defined the MCC customer journey and the automated licence provisioning flows that replaced manual hand offs between IT, network and operations.</li>
+              <li>Take incoming business requests, test them against strategy and commercial value, and turn approved ones into scoped initiatives with success criteria and a prioritized backlog.</li>
+              <li>Work daily with engineering, network, IT and operations, and own acceptance criteria and release readiness for SLA critical services.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="when"><b>Aug 2023 to Apr 2025</b>Amman</div>
+          <div>
+            <h3>Umniah Mobile Company</h3>
+            <p class="role">Digital Products Supervisor</p>
+            <ul>
+              <li>Owned the full rebuild of the eShop for fiber, 5G and bundles, from discovery to go live in under six months on a budget of about 1M JOD, managing the delivery vendor end to end.</li>
+              <li>Mapped the order lifecycle from eligibility and pricing through payment, provisioning, fulfilment, cash on delivery refusals and returns.</li>
+              <li>Led a team of five: two product owners and three logistics specialists running fulfilment and returns.</li>
+              <li>Replaced manual reporting with an instrumented data loop (Mixpanel, Insider One, Hotjar) across about 2,000 monthly orders, used to prioritize fixes.</li>
+              <li>Launched UGaming, Jordan's first gaming optimized fiber package: three tiers, a low latency or your money back guarantee and a live latency dashboard.</li>
+              <li>Designed a 0% buy now pay later option by adapting the HyperPay gateway and aligning with Arab Bank to trigger their instalment flow.</li>
+            </ul>
+            <div class="chips"><i>Live in under 6 months</i><i>Team of 5</i><i>~2,000 orders a month</i></div>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="when"><b>Feb 2020 to Aug 2023</b>Amman</div>
+          <div>
+            <h3>Zain Jordan</h3>
+            <p class="role">Product Marketing Manager, Home Solutions</p>
+            <ul>
+              <li>Owned the fiber and smart home Wi-Fi mesh product lines end to end, growing subscribers 300% through digital channels.</li>
+              <li>Brought NVIDIA GeForce NOW to Jordan as the country's first cloud gaming service, running partner, network and commercial workstreams to launch with 500+ subscribers and national press.</li>
+              <li>Set up a WhatsApp Business channel through Infobip for lead capture and hand over to sales.</li>
+            </ul>
+            <div class="chips"><i>Subscribers +300%</i><i>Jordan's first cloud gaming</i></div>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="when"><b>Feb 2018 to Feb 2020</b>Amman</div>
+          <div>
+            <h3>Zain Jordan</h3>
+            <p class="role">Product Marketing, VAS and Digital Products</p>
+            <ul>
+              <li>Launched Direct Carrier Billing, running the technical implementation and billing integration with local and global partners.</li>
+              <li>Led value added service launches including ZainGames and Zain Kids Shuttle, and managed content partnerships with OSN+, TOD and Apple.</li>
+            </ul>
+            <p class="prior">Joined Zain in June 2017 as a Customer Service Advisor.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>AI experiments</h2>
+        <div class="builds">
+          <div class="build"><h4><a href="https://hwezyrmas.github.io/dark-deco/" target="_blank" rel="noopener">Dark Deco</a><em>Live</em></h4><p>Two player online co-op game for phones. One phone hosts, the other joins with a four letter code. Goes live with every change, with automated playtests.</p></div>
+          <div class="build"><h4><a href="https://shouldiwatchit.vercel.app/" target="_blank" rel="noopener">Should I Watch It?</a><em>Live</em></h4><p>Claude reads the vibe of a movie or show, finds matches for your mood, or picks one for a group. Next.js on Vercel.</p></div>
+          <div class="build"><h4>FieldLink<em>In progress</em></h4><p>Push to talk with real radio tones and a live team map for field crews.</p></div>
+          <div class="build"><h4><a href="index.html">This portfolio</a><em>Live</em></h4><p>WebGL logo animation, case studies and illustrations, built in conversation with Claude.</p></div>
+        </div>
+      </section>
+    </main>
+
+    <aside>
+      <section>
+        <h2>Skills</h2>
+        <ul class="skills">
+          <li><b>Product</b>Strategy and roadmaps, intake and prioritization, process mapping, PRDs and acceptance criteria, UAT and release readiness, business cases</li>
+          <li><b>Go to market</b>Launch planning, pricing tiers, partner and vendor management, digital channel growth</li>
+          <li><b>Telecom and platforms</b>5G slicing, IoT, mission critical comms, carrier billing, VAS, partner APIs, Magento 2, CRM</li>
+          <li><b>Data</b>Mixpanel, Hotjar, Insider One, funnel analysis</li>
+          <li><b>AI prototyping</b>Claude Code, Next.js, Vercel, GitHub Actions, Figma</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Certifications</h2>
+        <ul class="cert">
+          <li>Generative AI Leader<span>Google Cloud</span></li>
+          <li>AI Agents for Product Leaders</li>
+          <li>Managing Data Analysis<span>Johns Hopkins University</span></li>
+          <li>Introduction to Data Analytics<span>IBM</span></li>
+        </ul>
+      </section>
+      <section class="edu">
+        <h2>Education</h2>
+        <p>BSc Computer Graphics and Animation<span>Princess Sumaya University for Technology</span></p>
+      </section>
+      <section class="edu">
+        <h2>Languages</h2>
+        <p>Arabic, native<br>English, fluent</p>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="foot"><span>Hamza Sein</span><a href="index.html">Portfolio</a></footer>
+</article>
+<script>
+</script>
+</body>
+</html>
