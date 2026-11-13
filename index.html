@@ -979,6 +979,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
   .h-me-m{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:14px;border:2px solid var(--mint);box-shadow:7px 7px 0 var(--uv);margin:4px 7px 0 0;animation:cardIn 1s .15s cubic-bezier(.2,.8,.2,1) both}
   .h-copy{padding-top:100px!important}
 }
+@media (max-width:440px){.secnav{left:8px;right:8px;transform:translateY(170%);gap:6px}.secnav.show{transform:none}.tb{flex:1;min-width:0}.tb a{flex:1 1 0;min-width:0!important;padding:0 2px}.tb a span{overflow:hidden;text-overflow:clip;max-width:100%}.tb-talk{flex:none}}
 </style>
 </head>
 <body class="light">
@@ -1341,7 +1342,7 @@ if(!reduce && "IntersectionObserver" in window){
   const iso=document.getElementById("lyrIso"), slabs=[...iso.querySelectorAll(".slab")], items=[...lyr.querySelectorAll(".lyr-it")], navs=[...lyr.querySelectorAll(".lyr-nav button")], hint=document.getElementById("lyrHint");
   const N=4, html=document.documentElement, COARSE=matchMedia("(pointer: coarse)").matches, MOBQ=matchMedia("(max-width:820px)");
   const MOB=()=>MOBQ.matches;
-  const track=lyr.querySelector(".lyr-items");
+  const trk=lyr.querySelector(".lyr-items");
   let quietUntil=0, k=0, ex=0, locked=false, exploded=false, stepAt=0, lastEvt=0, prevTop=null, ty=null, tyMoved=false;
   const L=()=>(typeof lenis!=="undefined"&&lenis)?lenis:null;
   function paint(){
@@ -1354,9 +1355,9 @@ if(!reduce && "IntersectionObserver" in window){
   function explode(){ if(exploded) return; exploded=true; if(reduce){ ex=1; paint(); return; }
     const t0=performance.now(); (function f(now){ ex=Math.min(1,(now-t0)/650); ex=1-Math.pow(1-ex,3); paint(); if(ex<1) requestAnimationFrame(f); })(t0); }
   function setK(n,fromTrack){ n=Math.max(0,Math.min(N-1,n)); if(n===k) return; k=n; track("What I do: layer",{layer:["Network","Product","Channel","AI lab"][k]}); stepAt=performance.now(); paint();
-    if(MOB()&&!fromTrack){ const it=items[k]; track.scrollTo({left:it.offsetLeft-track.offsetLeft,behavior:reduce?"auto":"smooth"}); } }
+    if(MOB()&&!fromTrack){ const it=items[k]; trk.scrollTo({left:it.offsetLeft-trk.offsetLeft,behavior:reduce?"auto":"smooth"}); } }
   /* phones: the layers are a sideways carousel, one card per swipe; the stack follows */
-  let tT=0; track.addEventListener("scroll",()=>{ if(!MOB()) return; clearTimeout(tT); tT=setTimeout(()=>{ const w=items[0].offsetWidth+12; setK(Math.round(track.scrollLeft/w),true); },60); },{passive:true});
+  let tT=0; trk.addEventListener("scroll",()=>{ if(!MOB()) return; clearTimeout(tT); tT=setTimeout(()=>{ const w=items[0].offsetWidth+12; setK(Math.round(trk.scrollLeft/w),true); },60); },{passive:true});
   function lock(atK){
     locked=true; k=atK; explode(); paint();
     const y=lyr.getBoundingClientRect().top+scrollY, l=L();
