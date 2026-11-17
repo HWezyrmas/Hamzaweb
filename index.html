@@ -696,7 +696,9 @@ body.shake main{animation:shake .5s linear 2}
 .hsi.out .intro-skip{display:none}
 html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:hidden}
 .h-logo{display:inline-block;flex:none;height:var(--lh);width:calc(var(--lh)*var(--la,.9));position:relative;isolation:isolate}
-.h-logo canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1;filter:drop-shadow(0 0 calc(3px + 4px*var(--g,0)) rgba(60,255,208,calc(.45 + .45*var(--g,0)))) drop-shadow(0 0 calc(10px + 18px*var(--g,0)) rgba(110,50,255,calc(.35 + .4*var(--g,0))))}
+.h-logo canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.h-logo .intro-stage{filter:drop-shadow(0 0 calc(3px + 4px*var(--g,0)) rgba(60,255,208,calc(.45 + .45*var(--g,0)))) drop-shadow(0 0 calc(10px + 18px*var(--g,0)) rgba(110,50,255,calc(.35 + .4*var(--g,0))))}
+.lg-glass{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none;overflow:visible;transition:opacity .4s}
 .h-halo{position:absolute;inset:-14px;z-index:0;border-radius:50%;background:radial-gradient(closest-side,rgba(60,255,208,.35),rgba(82,0,255,.22) 55%,transparent 75%);filter:blur(10px);opacity:calc(.12 + .88*var(--g,0));transform:scale(calc(.9 + .25*var(--g,0)))}
 .h-pill{font-family:var(--f-display);font-weight:600;font-size:14.5px;text-decoration:none;color:#fff;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background .2s,border-color .2s}
 .h-pill:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}
@@ -1619,6 +1621,49 @@ if(!reduce && "IntersectionObserver" in window){
   addEventListener("resize",layout);
 })();
 
+
+/* ---------- HS logo seen through slanted glass tiles; every few seconds the tiles switch off and back on ---------- */
+(function(){
+  const slot=document.getElementById("hLogo"); if(!slot) return;
+  /* slanted tiles in a 0..100 box, leaning like "/" */
+  const C=3,R=4,SH=-.55,G=1.4, T=[];
+  for(let r=0;r<R;r++) for(let c=-1;c<=C;c++){
+    const y0=r*100/R+G/2, y1=(r+1)*100/R-G/2, x=(cc,y)=>cc*100/C+SH*(y-50);
+    const p=[[x(c,y0)+G/2,y0],[x(c+1,y0)-G/2,y0],[x(c+1,y1)-G/2,y1],[x(c,y1)+G/2,y1]];
+    if(Math.max(...p.map(q=>q[0]))<0||Math.min(...p.map(q=>q[0]))>100) continue;
+    T.push({pts:p.map(q=>q[0].toFixed(2)+","+q[1].toFixed(2)).join(" "),score:c-r*.9,o:1});
+  }
+  const outOrder=[...T].sort((a,b)=>b.score-a.score), inOrder=[...T].sort((a,b)=>a.score-b.score);
+  const NS="http://www.w3.org/2000/svg";
+  let canvas=null, glass=null, polys=[];
+  function maskURL(){ const body=T.map(t=>`<polygon points='${t.pts}' fill='white' fill-opacity='${t.o.toFixed(3)}'/>`).join("");
+    return `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'>${body}</svg>`)}")`; }
+  function paint(){ if(!canvas) return; const m=maskURL(); canvas.style.webkitMaskImage=m; canvas.style.maskImage=m;
+    const act=T.some(x=>x.o<1); glass.style.opacity=act?1:.18; polys.forEach((p,i)=>{ const o=T[i].o; p.setAttribute("opacity",o.toFixed(3)); p.setAttribute("fill-opacity",(.10+.55*Math.sin(Math.PI*Math.min(1,o))*(o<1?1:0)).toFixed(3)); }); }
+  function setup(){
+    canvas=slot.querySelector("canvas"); if(!canvas) return false;
+    glass=document.createElementNS(NS,"svg"); glass.setAttribute("viewBox","0 0 100 100"); glass.setAttribute("preserveAspectRatio","none"); glass.setAttribute("class","lg-glass"); glass.setAttribute("aria-hidden","true");
+    glass.innerHTML=`<defs><linearGradient id="lgSheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#c8fff0" stop-opacity=".25"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient></defs>`+
+      T.map(t=>`<polygon points="${t.pts}" fill="url(#lgSheen)" fill-opacity=".1" stroke="rgba(200,255,240,.45)" stroke-width=".8" vector-effect="non-scaling-stroke"/>`).join("");
+    slot.appendChild(glass); polys=[...glass.querySelectorAll("polygon")]; paint(); return true;
+  }
+  /* timeline: out from the top right, a beat of darkness, back in from the bottom left */
+  const STEP=70, FADE=150, DARK=380;
+  function run(){
+    const t0=performance.now(), outEnd=outOrder.length*STEP+FADE, inStart=outEnd+DARK, end=inStart+inOrder.length*STEP+FADE;
+    (function f(now){ const t=now-t0;
+      outOrder.forEach((tile,k)=>{ const s=k*STEP; if(t<inStart) tile.o=1-Math.min(1,Math.max(0,(t-s)/FADE)); });
+      inOrder.forEach((tile,k)=>{ const s=inStart+k*STEP; if(t>=inStart) tile.o=Math.min(1,Math.max(0,(t-s)/FADE)); });
+      paint(); if(t<end) requestAnimationFrame(f); else { T.forEach(x=>x.o=1); paint(); }
+    })(t0);
+  }
+  let heroVis=true;
+  const hero=document.getElementById("hero");
+  if(hero&&"IntersectionObserver" in window) new IntersectionObserver(es=>{ heroVis=es[0].isIntersecting; }).observe(hero);
+  function begin(){ if(!setup()) return; if(reduce) return;
+    setTimeout(run,1200); setInterval(()=>{ if(heroVis&&!document.hidden) run(); },9000); }
+  if(window.__introDone) setTimeout(begin,100); else addEventListener("hsintrodone",()=>setTimeout(begin,100),{once:true});
+})();
 /* career path lights up as you scroll */
 const pathEls=[...document.querySelectorAll("#path li")];
 function onScroll(){ pathEls.forEach(p=>p.classList.toggle("lit", p.getBoundingClientRect().top < innerHeight*.7)); }
