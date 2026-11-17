@@ -694,25 +694,6 @@ body.shake main{animation:shake .5s linear 2}
 @keyframes flashOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(130)}}
 .intro-skip{position:fixed;right:18px;bottom:18px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;font-family:var(--f-display);font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px}
 .hsi.out .intro-skip{display:none}
-/* ===== crystal intro ===== */
-.cx{position:fixed;inset:0;z-index:1002;overflow:hidden;pointer-events:none;perspective:1100px}
-.cx *{position:absolute}
-.cx-shk{inset:0;transform-style:preserve-3d}
-.cx-rain{inset:0}
-.cx-rain img,.cx-com{top:0;left:0;opacity:0;will-change:transform,opacity}
-.cx-lock{left:50%;top:47%;width:min(94vw,920px);aspect-ratio:1423/637;transform:translate(-50%,-50%);transform-style:preserve-3d}
-.cx-l{opacity:0;transform-style:preserve-3d;will-change:transform,opacity}
-.cx-l>img{inset:0;width:100%;height:100%}
-.cx-sh{inset:0;overflow:hidden;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
-.cx-sh i{top:-20%;left:-70%;width:60%;height:140%;background:linear-gradient(100deg,transparent 10%,rgba(255,255,255,.9) 45%,rgba(140,255,235,.7) 55%,transparent 90%);transform:translateX(0) skewX(-12deg)}
-.cx-glow{left:-12%;right:-12%;top:-30%;bottom:-30%;border-radius:50%;background:radial-gradient(closest-side,rgba(150,80,255,.55),rgba(60,255,208,.18) 55%,transparent 80%);opacity:0}
-.cx-burst{left:31%;width:38%;top:62%;opacity:0;transform-origin:50% 90%}
-.cx-c{left:50%;top:47%;width:0;height:0}
-.cx-ring{left:-30px;top:-30px;width:60px;height:60px;border-radius:50%;border:2px solid #9ffbe6;box-shadow:0 0 18px #3cffd0,inset 0 0 18px #b06bff;opacity:0}
-.cx-sp{left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#fff 0,#c9a6ff 40%,transparent 70%);opacity:0}
-.cx-flash{position:fixed;inset:0;background:radial-gradient(60% 55% at 50% 47%,#fff 0,rgba(170,240,255,.85) 25%,rgba(130,60,255,.35) 55%,transparent 80%);opacity:0;pointer-events:none}
-.intro-skip{z-index:1003}
-html.cx-on .intro-stage{opacity:0}
 html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:hidden}
 .h-logo{display:inline-block;flex:none;height:var(--lh);width:calc(var(--lh)*var(--la,.9));position:relative;isolation:isolate}
 .h-logo canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1;filter:drop-shadow(0 0 calc(3px + 4px*var(--g,0)) rgba(60,255,208,calc(.45 + .45*var(--g,0)))) drop-shadow(0 0 calc(10px + 18px*var(--g,0)) rgba(110,50,255,calc(.35 + .4*var(--g,0))))}
@@ -1104,7 +1085,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 </style>
 </head>
 <body class="light">
-<div class="hsi" id="intro" aria-hidden="true"><div class="intro-stage" id="introStage"></div><div class="intro-flash" id="introFlash"></div><div class="cx" id="cx" aria-hidden="true"><div class="cx-shk" id="cxShk"><div class="cx-rain" id="cxRain"></div><div class="cx-lock" id="cxLock"><div class="cx-glow" id="cxGlow"></div><img class="cx-burst" id="cxBurst" src="img/cx/burst.webp" alt=""></div><div class="cx-c" id="cxC"></div></div><div class="cx-flash" id="cxFlash"></div></div><button type="button" class="intro-skip" id="introSkip">Skip</button></div>
+<div class="hsi" id="intro" aria-hidden="true"><div class="intro-stage" id="introStage"></div><div class="intro-flash" id="introFlash"></div><button type="button" class="intro-skip" id="introSkip">Skip</button></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="lgNav" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage id="lgNavMap" x="0" y="0" result="map" preserveAspectRatio="none"/><feDisplacementMap in="SourceGraphic" in2="map" scale="38" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="lgTalk" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage id="lgTalkMap" x="0" y="0" result="map" preserveAspectRatio="none"/><feDisplacementMap in="SourceGraphic" in2="map" scale="30" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
 <div class="cur" id="cur" aria-hidden="true"></div>
 <canvas id="spark" aria-hidden="true"></canvas>
@@ -2114,7 +2095,7 @@ const HS={targetY:()=>null};
 (function(){
   const intro=document.getElementById("intro"), stage=document.getElementById("introStage"), flashEl=document.getElementById("introFlash"), slot=document.getElementById("hLogo");
   const done=()=>{ window.__introDone=true; dispatchEvent(new Event("hsintrodone")); intro.classList.add("gone"); document.documentElement.classList.remove("intro-lock"); if(typeof lenis!=="undefined"&&lenis) lenis.scrollTo(0,{immediate:true}); scrollTo(0,0); setTimeout(()=>intro.remove(),600); };
-  if(!window.THREE){ window.__hsLand=done; return; }
+  if(!window.THREE){ done(); return; }
   const T=THREE;
   /* geometry in logo space (X right-down, Y left-down, Z up) -> three (x=X, y=Z, z=Y) */
   const b=4,a=8,ox=7;
@@ -2175,8 +2156,7 @@ const HS={targetY:()=>null};
   function grow(m,k){ const d=m.userData; const s=Math.max(.0001,k); m.scale.set(1,1,1); const key=d.ax==="x"?"x":d.ax==="z"?"y":"z"; m.scale[key]=s;
     const len=d.n*s, start=d.dir>0? d.lo : d.lo+d.n; const centerAlong= d.dir>0? start+len/2 : start-len/2; const c={...d.c}; c[d.ax]=centerAlong; m.position.set(c.x-ctr.x,c.z-ctr.y,c.y-ctr.z); m.visible=k>0; }
   const reduceM=reduce;
-  let t0=performance.now(), phase="wait", landed=false, pulseT=0;
-  stage.style.opacity="0"; window.__hsLand=()=>{ if(phase==="wait") phase="skip"; };
+  let t0=performance.now(), phase="build", landed=false, pulseT=0;
   const BUILD=1.25, TURN=1.0;
   /* the intro plays on every load, campaign visits included */
   if(reduceM) phase="skip";
@@ -2193,7 +2173,7 @@ const HS={targetY:()=>null};
     stage.style.transform=`translate(${r.left-s.left}px,${r.top-s.top}px) scale(${sc})`;
     intro.classList.add("out");
     setTimeout(()=>{ stage.style.transition="none"; stage.style.transform="none"; stage.style.position="absolute"; stage.style.left="0"; stage.style.top="0"; stage.style.width="100%"; stage.style.height="100%";
-      stage.style.width="100%"; stage.style.opacity=""; slot.appendChild(stage); HFIX=0; host=slot; fit(slot); view(ISO_AZ,ISO_EL); done(); }, fast?0:850);
+      stage.style.width="100%"; slot.appendChild(stage); HFIX=0; host=slot; fit(slot); view(ISO_AZ,ISO_EL); done(); }, fast?0:850);
   }
   document.getElementById("introSkip").addEventListener("click",()=>{ phase="skip"; track("Skipped logo intro"); });
   intro.addEventListener("click",e=>{ if(e.target===intro) phase="skip"; });
@@ -2201,7 +2181,6 @@ const HS={targetY:()=>null};
   function frame(now){
     requestAnimationFrame(frame);
     const t=(now-t0)/1000;
-    if(phase==="wait") return;
     if(phase==="skip"){ intro.style.transition="none"; intro.classList.add("out"); land(true); }
     if(phase==="build"){
       view(AZ0, EL0);
@@ -2228,79 +2207,6 @@ const HS={targetY:()=>null};
   requestAnimationFrame(frame);
   addEventListener("resize",()=>fit(host));
 })();
-
-/* ================= crystal intro: shard rain, impact, letters slam in, sheen, explode out ================= */
-(function(){
-  const intro=document.getElementById("intro"), cx=document.getElementById("cx"); if(!intro||!cx) return;
-  const land=()=>{ if(window.__hsLand) window.__hsLand(); };
-  if(reduce){ cx.remove(); land(); return; }
-  document.documentElement.classList.add("cx-on");
-  const LET=[["H", 0.0, 0.0, 24.74, 57.93], ["A1", 22.28, 2.04, 18.83, 49.29], ["M", 40.62, 1.88, 21.36, 47.88], ["Z", 58.4, 4.24, 23.89, 44.11], ["A2", 78.57, 1.88, 21.43, 54.47], ["S", 4.92, 50.24, 25.72, 47.72], ["E", 30.64, 50.08, 23.05, 47.1], ["I", 54.53, 48.51, 12.3, 51.49], ["N", 68.24, 46.47, 21.5, 51.96]];
-  const MOB=innerWidth<=760, R=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.random()*a.length|0];
-  const lock=document.getElementById("cxLock"), rain=document.getElementById("cxRain"), shk=document.getElementById("cxShk"), C=document.getElementById("cxC"), flashEl=document.getElementById("cxFlash"), glow=document.getElementById("cxGlow"), burst=document.getElementById("cxBurst");
-  const srcs=LET.map(l=>"img/cx/"+l[0]+".webp").concat(["img/cx/burst.webp","img/cx/cluster.webp"],[1,2,3,4].map(i=>"img/cx/s"+i+"-mb.webp"));
-  let killed=false; const anims=[];
-  const A=(el,kf,o)=>{ const a=el.animate(kf,Object.assign({fill:"both"},o)); anims.push(a); return a; };
-  document.getElementById("introSkip").addEventListener("click",()=>{ killed=true; anims.forEach(a=>a.cancel()); cx.remove(); document.documentElement.classList.remove("cx-on"); });
-  const letters=LET.map(([k,x,y,w,h])=>{ const d=document.createElement("div"); d.className="cx-l"; d.style.cssText=`left:${x}%;top:${y}%;width:${w}%;height:${h}%`;
-    const u=`url(img/cx/${k}.webp)`; d.innerHTML=`<img src="img/cx/${k}.webp" alt=""><div class="cx-sh" style="-webkit-mask-image:${u};mask-image:${u}"><i></i></div>`; lock.appendChild(d); d._x=x+w/2; d._y=y+h/2; return d; });
-  function shake(p,ms){ A(shk,[0,1,2,3,4,5,6].map(i=>({transform:i===6?"none":`translate3d(${R(-p,p)}px,${R(-p,p)}px,0) rotate(${R(-p,p)*.08}deg)`})),{duration:ms,easing:"linear",fill:"none"}); }
-  function sparks(n,x,y,dist,cols){ for(let i=0;i<n;i++){ const s=document.createElement("i"); s.className="cx-sp"; if(cols) s.style.background=`radial-gradient(circle,#fff 0,${pick(cols)} 40%,transparent 70%)`;
-      const sz=R(.6,1.8); s.style.left=x+"px"; s.style.top=y+"px"; C.appendChild(s); const an=R(0,6.283), d=R(.35,1)*dist;
-      A(s,[{opacity:1,transform:`translate3d(0,0,0) scale(${sz})`},{opacity:0,transform:`translate3d(${Math.cos(an)*d}px,${Math.sin(an)*d}px,0) scale(0)`}],{duration:R(500,900),easing:"cubic-bezier(.1,.8,.3,1)"}); } }
-  function ring(delay,col,sc){ const r=document.createElement("i"); r.className="cx-ring"; if(col) r.style.borderColor=col; C.appendChild(r);
-    A(r,[{opacity:1,transform:"scale(.2)"},{opacity:0,transform:`scale(${sc})`}],{duration:750,delay,easing:"cubic-bezier(.1,.7,.3,1)"}); }
-  function flash(peak,ms,delay){ A(flashEl,[{opacity:0},{opacity:peak,offset:.15},{opacity:0}],{duration:ms,delay:delay||0,easing:"ease-out",fill:"none"}); }
-  function run(){
-    if(killed) return;
-    const vw=innerWidth, vh=innerHeight, lr=lock.getBoundingClientRect(), cyy=lr.top+lr.height/2;
-    /* 1. shard rain */
-    const N=MOB?11:18;
-    for(let i=0;i<N;i++){ const im=new Image(); im.src="img/cx/s"+(1+(i%4))+"-mb.webp"; rain.appendChild(im);
-      const w=R(MOB?16:22,MOB?34:52), x=R(vw*.08,vw*.92), h=w*6.6, d=i*R(28,48);
-      im.style.width=w+"px";
-      A(im,[{opacity:0,transform:`translate3d(${x}px,${-h}px,0)`},{opacity:1,offset:.2},{opacity:.9,offset:.8},{opacity:0,transform:`translate3d(${x}px,${cyy-h*.7+R(-40,40)}px,0)`}],{duration:R(380,520),delay:80+d,easing:"cubic-bezier(.5,0,.9,.6)"}); }
-    /* the big cluster comes in hot */
-    const com=new Image(); com.src="img/cx/cluster.webp"; com.className="cx-com"; rain.appendChild(com);
-    const cw=Math.min(vw*.34,260); com.style.width=cw+"px";
-    A(com,[{opacity:0,transform:`translate3d(${vw/2-cw/2}px,${-cw*1.6}px,0) rotate(-14deg) scale(1.5)`},{opacity:1,offset:.3},{opacity:1,transform:`translate3d(${vw/2-cw/2}px,${cyy-cw*.85}px,0) rotate(4deg) scale(.7)`}],{duration:520,delay:560,easing:"cubic-bezier(.55,0,1,.45)"});
-    A(com,[{opacity:1},{opacity:0,transform:`translate3d(${vw/2-cw/2}px,${cyy-cw*.85}px,0) scale(2.4)`}],{duration:220,delay:1080,easing:"ease-out",fill:"forwards"});
-    /* 2. impact */
-    const T=1080;
-    setTimeout(()=>{ com.style.visibility="hidden"; rain.querySelectorAll("img").forEach(im=>im.style.visibility="hidden"); },T+240);
-    setTimeout(()=>{ if(killed) return; flash(.95,520); shake(MOB?9:14,420); ring(0,null,MOB?16:26); ring(90,"#ff7ad9",MOB?11:18);
-      sparks(MOB?18:30,0,0,Math.max(vw,vh)*.45,["#3cffd0","#c9a6ff","#ff7ad9","#7fb6ff"]); },T);
-    A(burst,[{opacity:0,transform:"translateY(30%) scale(.2,0)"},{opacity:1,transform:"translateY(-6%) scale(1.08,1.25)",offset:.55},{opacity:.85,transform:"none"}],{duration:620,delay:T,easing:"cubic-bezier(.2,1.4,.4,1)"});
-    A(glow,[{opacity:0,transform:"scale(.4)"},{opacity:1,transform:"scale(1)"}],{duration:900,delay:T,easing:"ease-out"});
-    /* 3. letters spin in from everywhere and slam into place */
-    const order=letters.map((l,i)=>i).sort(()=>Math.random()-.5);
-    order.forEach((i,k)=>{ const l=letters[i], an=R(0,6.283), far=Math.max(vw,vh)*R(.7,1.1), del=T+120+k*75, dur=640;
-      A(l,[{opacity:0,transform:`translate3d(${Math.cos(an)*far}px,${Math.sin(an)*far}px,${R(300,900)}px) rotateX(${R(-540,540)}deg) rotateY(${R(-540,540)}deg) rotateZ(${R(-200,200)}deg) scale(${R(1.6,2.6)})`},
-        {opacity:1,offset:.3},{opacity:1,transform:"translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0) scale(1)"}],{duration:dur,delay:del,easing:"cubic-bezier(.15,1.15,.3,1)"});
-      setTimeout(()=>{ if(killed) return; const lx=lr.left+lr.width*l._x/100-vw/2, ly=lr.top+lr.height*l._y/100-cyy; shake(k===letters.length-1?(MOB?8:12):(MOB?3:5),k===letters.length-1?380:160);
-        sparks(MOB?5:8,lx,ly,lr.width*.16,["#3cffd0","#c9a6ff","#ff7ad9"]); if(k===letters.length-1){ flash(.55,420); ring(0,"#ffffff",MOB?12:20); } },del+dur*.55); });
-    const settled=T+120+(letters.length-1)*75+640*.6;
-    /* 4. holographic sheen and a breath of glow */
-    letters.forEach(l=>A(l.querySelector(".cx-sh i"),[{transform:"translateX(0) skewX(-12deg)"},{transform:"translateX(330%) skewX(-12deg)"}],{duration:700,delay:settled+150+l._x*5,easing:"cubic-bezier(.4,0,.2,1)"}));
-    A(glow,[{opacity:1,transform:"scale(1)"},{opacity:.6,transform:"scale(1.12)"},{opacity:1,transform:"scale(1)"}],{duration:900,delay:settled,easing:"ease-in-out",fill:"forwards"});
-    A(lock,[{transform:"translate(-50%,-50%) scale(1)"},{transform:"translate(-50%,-50%) scale(1.04)"}],{duration:1200,delay:settled-100,easing:"cubic-bezier(.3,0,.3,1)"});
-    /* 5. explode toward the camera and reveal the page */
-    const X=settled+1250;
-    letters.forEach((l,i)=>{ const dx=(l._x-50)/50, dy=(l._y-50)/50;
-      A(l,[{opacity:1,transform:"translate3d(0,0,0)"},{opacity:0,transform:`translate3d(${dx*vw*.6+R(-60,60)}px,${dy*vh*.5+R(-80,80)}px,${R(500,900)}px) rotateX(${R(-180,180)}deg) rotateY(${R(-180,180)}deg) rotateZ(${R(-90,90)}deg)`}],{duration:620,delay:X+Math.abs(dx)*60,easing:"cubic-bezier(.5,0,.8,.4)",fill:"forwards"}); });
-    A(burst,[{opacity:.85,transform:"none"},{opacity:0,transform:"translateY(20%) scale(1.6,.2)"}],{duration:420,delay:X,easing:"ease-in",fill:"forwards"});
-    A(glow,[{opacity:1},{opacity:0,transform:"scale(2)"}],{duration:500,delay:X,easing:"ease-in",fill:"forwards"});
-    setTimeout(()=>{ if(killed) return; flash(.7,500); shake(MOB?6:9,260); sparks(MOB?14:24,0,0,Math.max(vw,vh)*.5,["#3cffd0","#ff7ad9","#c9a6ff"]); },X+120);
-    A(intro,[{opacity:1},{opacity:0}],{duration:520,delay:X+260,easing:"ease-in",fill:"forwards"});
-    setTimeout(()=>{ if(killed) return; land(); setTimeout(()=>{ cx.remove(); document.documentElement.classList.remove("cx-on"); },700); },X+800);
-    if(window.track) track("Intro: crystal played");
-  }
-  /* wait for the crystal art (cached after the first visit); give up gracefully if the network is slow */
-  let started=false; const go=()=>{ if(started) return; started=true; run(); };
-  Promise.all(srcs.map(u=>new Promise(r=>{ const im=new Image(); im.onload=im.onerror=r; im.src=u; if(im.decode) im.decode().then(r,r); }))).then(go);
-  setTimeout(()=>{ if(!started){ started=true; killed=true; cx.remove(); document.documentElement.classList.remove("cx-on"); land(); } },4500);
-})();
-
 
 route(); onScroll();
 </script>
