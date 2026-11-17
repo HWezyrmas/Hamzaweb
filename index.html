@@ -1003,6 +1003,65 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .h-energy.paused *{animation-play-state:paused}
 @media (max-width:760px){.en-w{height:30%}.en-a{top:30%}.en-b{top:36%}}
 @media (prefers-reduced-motion:reduce){.h-energy *{animation:none}}
+/* ---------- My deck: trading cards ---------- */
+.deck-hint{margin:8px 0 0;font-family:var(--f-display);font-weight:600;font-size:14px;color:#6b6b75}
+.deck{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px 28px;margin-top:30px;justify-items:center;perspective:1200px}
+.card{--w:clamp(260px,26vw,320px);--rx:0deg;--ry:0deg;--mx:50%;--my:50%;--fo:0;width:var(--w);aspect-ratio:5/7;position:relative;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.card-in{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(calc(var(--ry) + var(--flip,0deg)));transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.card.tilt .card-in{transition:transform .08s linear}
+.card.flip{--flip:180deg}
+.cf{position:absolute;inset:0;border-radius:16px;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;color:#fff}
+.card{--c1:#3cffd0;--c2:#5200ff}
+.card.r-leg{--c1:#ffd36b;--c2:#ff7a2f}
+.card.r-epic{--c1:#ff4fd8;--c2:#5200ff}
+.card.r-rare{--c1:#3cffd0;--c2:#2b8cff}
+.cf-front{display:flex;flex-direction:column;padding:9px;background:#0b0820;border:3px solid var(--c1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 0 0 1px #000,0 0 22px color-mix(in srgb,var(--c1) 55%,transparent),0 18px 40px rgba(10,5,40,.45)}
+.cf-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 3px 7px}
+.cf-rar{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);font-weight:700;font-size:10.5px;letter-spacing:.06em;color:var(--c1);text-transform:uppercase}
+.cf-rar i{width:9px;height:9px;transform:rotate(45deg);background:linear-gradient(135deg,#fff,var(--c1) 45%,var(--c2));box-shadow:0 0 8px var(--c1)}
+.cf-pwr{display:flex;align-items:baseline;gap:5px;font-family:var(--f-mast);font-weight:900;font-size:30px;line-height:.8;color:#fff;text-shadow:0 0 12px color-mix(in srgb,var(--c1) 70%,transparent)}
+.cf-pwr small{font-family:var(--f-display);font-weight:700;font-size:8.5px;line-height:1.1;letter-spacing:.04em;text-transform:uppercase;color:#0b0820;background:var(--c1);padding:2px 5px;border-radius:4px;max-width:72px;text-shadow:none;font-size:7.5px;letter-spacing:.02em}
+.cf-art{position:relative;flex:1 1 auto;min-height:0;border-radius:8px;overflow:hidden;border:1.5px solid color-mix(in srgb,var(--c1) 70%,transparent)}
+.cf-art>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.cf-cls{position:absolute;left:0;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;rotate:180deg;padding:10px 4px;font-family:var(--f-display);font-weight:800;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#0b0820;background:var(--c1);border-radius:0 6px 6px 0}
+.cf-crest{position:absolute;right:7px;top:7px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(6,3,26,.75);border:1.5px solid var(--c1);box-shadow:0 0 10px color-mix(in srgb,var(--c1) 60%,transparent)}
+.cf-crest img{width:20px;height:auto}
+.cf-name{margin:-17px 10px 0;position:relative;z-index:1;padding:6px 10px;text-align:center;font-family:var(--f-mast);font-weight:900;font-size:21px;line-height:1;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(180deg,#1a1240,#0b0820);border:1.5px solid var(--c1);border-radius:8px;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,10px 100%,0 50%)}
+.cf-moves{list-style:none;margin:7px 2px 0;padding:0;display:grid;gap:3px}
+.cf-moves li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 6px;border-radius:6px;background:rgba(255,255,255,.05)}
+.cf-moves b{display:block;font-family:var(--f-display);font-weight:700;font-size:12px;line-height:1.1}
+.cf-moves i{display:block;font-style:italic;font-size:10px;line-height:1.2;color:#b9b2ee}
+.cf-moves em{flex:none;font-style:normal;font-family:var(--f-mast);font-weight:900;font-size:16px;color:var(--c1)}
+.cf-weak{margin:5px 4px 0;font-family:var(--f-display);font-size:9.5px;letter-spacing:.02em;color:#d6d2f2;text-align:center}
+.cf-weak b{font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c1);margin-right:4px}
+.cf-flav{margin:2px 4px 0;font-size:9px;text-align:center;color:#8c86b9}
+.cf-foil{position:absolute;inset:0;z-index:3;pointer-events:none;mix-blend-mode:color-dodge;opacity:calc(.12 + var(--fo)*.55);
+  background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.55),transparent 38%),
+  linear-gradient(115deg,transparent 20%,rgba(255,80,200,.35) 35%,rgba(255,230,90,.3) 42%,rgba(60,255,208,.38) 50%,rgba(80,170,255,.35) 58%,rgba(160,90,255,.35) 65%,transparent 80%);
+  background-size:100% 100%,250% 250%;background-position:0 0,var(--mx) var(--my);transition:opacity .3s}
+.cf-grit{position:absolute;inset:0;z-index:4;pointer-events:none;background:url(img/card-grit.webp) center/cover;mix-blend-mode:screen;opacity:.28}
+.cf-back{transform:rotateY(180deg);background:#06031a url(img/card-back.webp) center/cover;border:3px solid var(--c1);box-shadow:0 0 22px color-mix(in srgb,var(--c1) 55%,transparent),0 18px 40px rgba(10,5,40,.45);display:flex;flex-direction:column;align-items:center}
+.cb-logo{position:absolute;left:50%;top:41%;transform:translate(-50%,-50%);width:26%;aspect-ratio:1;display:grid;place-items:center}
+.cb-logo img{width:100%;filter:drop-shadow(0 0 10px rgba(60,255,208,.6))}
+.cb-panel{position:relative;margin:auto 12px 12px;padding:14px 14px 15px;border-radius:12px;background:rgba(6,3,26,.86);border:1px solid rgba(255,255,255,.14);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cb-k{margin:0 0 4px;font-family:var(--f-display);font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--c1)}
+.cb-panel h4{margin:0 0 6px;font-family:var(--f-mast);font-weight:900;font-size:22px;line-height:1;text-transform:uppercase}
+.cb-panel p:not(.cb-k){margin:0 0 10px;font-size:13.5px;line-height:1.45;color:#ddd8f7}
+.cb-go{font-family:var(--f-display);font-weight:800;font-size:13px;color:#0b0820;background:var(--c1);text-decoration:none;padding:7px 12px;border-radius:999px;display:inline-block}
+.card:focus-visible .card-in{outline:2px solid var(--uv);outline-offset:4px;border-radius:16px}
+@keyframes foilDrift{0%,100%{--mx:20%;--my:15%}50%{--mx:80%;--my:85%}}
+@property --mx{syntax:"<percentage>";inherits:true;initial-value:50%}
+@property --my{syntax:"<percentage>";inherits:true;initial-value:50%}
+@media (max-width:980px){.deck{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .deck{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin:22px -16px 0;padding:10px 16px 26px;scrollbar-width:none}
+  .deck::-webkit-scrollbar{display:none}
+  .card{--w:min(78vw,300px);flex:none;scroll-snap-align:center}
+  .cf-front,.cf-back{box-shadow:0 0 16px color-mix(in srgb,var(--c1) 45%,transparent)!important}
+  .deck{padding-bottom:18px}
+  .card .cf-front .cf-foil{animation:foilDrift 7s ease-in-out infinite;--fo:.35}
+}
+@media (prefers-reduced-motion:reduce){.card-in{transition:none}.cf-foil{animation:none!important}}
 </style>
 </head>
 <body class="light">
@@ -1053,6 +1112,114 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
   </nav>
 
   <div class="wrap">
+    <section class="sec deck-sec" id="deck">
+      <div class="shead"><h2 class="dec">My deck</h2><span>Six cards, one for each thing I'm proud of</span></div>
+      <p class="deck-hint">Tap a card to flip it</p>
+      <div class="deck" id="deck-row">
+<article class="card r-leg" data-card="Cloud Summoner" tabindex="0" role="button" aria-label="Cloud Summoner, tap to flip">
+  <div class="card-in">
+    <div class="cf cf-front">
+      <div class="cf-top"><span class="cf-rar"><i></i>Legendary</span><b class="cf-pwr">500+<small>subs at launch</small></b></div>
+      <div class="cf-art"><img src="img/card-cloud.webp" alt="" loading="lazy" decoding="async"><span class="cf-cls">Product</span><span class="cf-crest"><img src="img/hs-mark-dark.svg" alt=""></span></div>
+      <h3 class="cf-name">Cloud Summoner</h3>
+      <ul class="cf-moves"><li><span><b>Carrier Billing</b><i>pay with just a SIM</i></span><em>+300%</em></li><li><span><b>First in Jordan</b><i>cloud gaming with NVIDIA</i></span><em>1st</em></li></ul>
+      <p class="cf-weak"><b>Weakness</b> Buffering</p>
+      <p class="cf-flav">Zain Jordan, 2017 to 2023</p>
+      <i class="cf-foil" aria-hidden="true"></i><i class="cf-grit" aria-hidden="true"></i>
+    </div>
+    <div class="cf cf-back">
+      <span class="cb-logo"><img src="img/hs-mark-dark.svg" alt=""></span>
+      <div class="cb-panel"><p class="cb-k">Zain Jordan, 2017 to 2023</p><h4>Cloud Summoner</h4><p>Brought NVIDIA GeForce NOW to a market that had never seen cloud gaming, and made it as easy to pay for as a top-up.</p><a href="#case-gfn" class="cb-go">Read the case study</a></div>
+    </div>
+  </div>
+</article>
+<article class="card r-leg" data-card="Latency Hunter" tabindex="0" role="button" aria-label="Latency Hunter, tap to flip">
+  <div class="card-in">
+    <div class="cf cf-front">
+      <div class="cf-top"><span class="cf-rar"><i></i>Legendary</span><b class="cf-pwr">1st<small>gaming fiber</small></b></div>
+      <div class="cf-art"><img src="img/card-latency.webp" alt="" loading="lazy" decoding="async"><span class="cf-cls">Network</span><span class="cf-crest"><img src="img/hs-mark-dark.svg" alt=""></span></div>
+      <h3 class="cf-name">Latency Hunter</h3>
+      <ul class="cf-moves"><li><span><b>Money-back Ping</b><i>low latency, in writing</i></span><em>Guarantee</em></li><li><span><b>Cloud Bundle</b><i>with every tier</i></span><em>24 mo</em></li></ul>
+      <p class="cf-weak"><b>Weakness</b> Anyone who says megabits</p>
+      <p class="cf-flav">Umniah, 2023 to 2025</p>
+      <i class="cf-foil" aria-hidden="true"></i><i class="cf-grit" aria-hidden="true"></i>
+    </div>
+    <div class="cf cf-back">
+      <span class="cb-logo"><img src="img/hs-mark-dark.svg" alt=""></span>
+      <div class="cb-panel"><p class="cb-k">Umniah, 2023 to 2025</p><h4>Latency Hunter</h4><p>Jordan's first fiber plan built for gamers, sold on ping instead of speed, with a live latency graph per game.</p><a href="#case-ug" class="cb-go">Read the case study</a></div>
+    </div>
+  </div>
+</article>
+<article class="card r-epic" data-card="Funnel Fixer" tabindex="0" role="button" aria-label="Funnel Fixer, tap to flip">
+  <div class="card-in">
+    <div class="cf cf-front">
+      <div class="cf-top"><span class="cf-rar"><i></i>Epic</span><b class="cf-pwr">1.3%<small>conversion</small></b></div>
+      <div class="cf-art"><img src="img/card-funnel.webp" alt="" loading="lazy" decoding="async"><span class="cf-cls">Channel</span><span class="cf-crest"><img src="img/hs-mark-dark.svg" alt=""></span></div>
+      <h3 class="cf-name">Funnel Fixer</h3>
+      <ul class="cf-moves"><li><span><b>Instrument First</b><i>every step measured</i></span><em>0.7→1.3%</em></li><li><span><b>Revenue Surge</b><i>internet revenue</i></span><em>+120%</em></li></ul>
+      <p class="cf-weak"><b>Weakness</b> Opinions without data</p>
+      <p class="cf-flav">Umniah, 2023 to 2025</p>
+      <i class="cf-foil" aria-hidden="true"></i><i class="cf-grit" aria-hidden="true"></i>
+    </div>
+    <div class="cf cf-back">
+      <span class="cb-logo"><img src="img/hs-mark-dark.svg" alt=""></span>
+      <div class="cb-panel"><p class="cb-k">Umniah, 2023 to 2025</p><h4>Funnel Fixer</h4><p>Found where the eShop leaked, then rebuilt it around the data. Conversion nearly doubled.</p><a href="#case-eshop" class="cb-go">Read the case study</a></div>
+    </div>
+  </div>
+</article>
+<article class="card r-rare" data-card="Deal Maker" tabindex="0" role="button" aria-label="Deal Maker, tap to flip">
+  <div class="card-in">
+    <div class="cf cf-front">
+      <div class="cf-top"><span class="cf-rar"><i></i>Rare</span><b class="cf-pwr">0%<small>interest</small></b></div>
+      <div class="cf-art"><img src="img/card-deal.webp" alt="" loading="lazy" decoding="async"><span class="cf-cls">Channel</span><span class="cf-crest"><img src="img/hs-mark-dark.svg" alt=""></span></div>
+      <h3 class="cf-name">Deal Maker</h3>
+      <ul class="cf-moves"><li><span><b>Bank Alliance</b><i>Arab Bank at checkout</i></span><em>0%</em></li><li><span><b>Monthly Flagship</b><i>iPhone 16 by the month</i></span><em>25 JD</em></li></ul>
+      <p class="cf-weak"><b>Weakness</b> Full-price phones</p>
+      <p class="cf-flav">Umniah × Arab Bank</p>
+      <i class="cf-foil" aria-hidden="true"></i><i class="cf-grit" aria-hidden="true"></i>
+    </div>
+    <div class="cf cf-back">
+      <span class="cb-logo"><img src="img/hs-mark-dark.svg" alt=""></span>
+      <div class="cb-panel"><p class="cb-k">Umniah × Arab Bank</p><h4>Deal Maker</h4><p>Plugged a bank's 0% instalment plan into the checkout, so a flagship phone became a monthly number.</p><a href="#case-pay" class="cb-go">Read the case study</a></div>
+    </div>
+  </div>
+</article>
+<article class="card r-epic" data-card="Spectrum Commander" tabindex="0" role="button" aria-label="Spectrum Commander, tap to flip">
+  <div class="card-in">
+    <div class="cf cf-front">
+      <div class="cf-top"><span class="cf-rar"><i></i>Epic</span><b class="cf-pwr">???<small>classified</small></b></div>
+      <div class="cf-art"><img src="img/card-spectrum.webp" alt="" loading="lazy" decoding="async"><span class="cf-cls">Network</span><span class="cf-crest"><img src="img/hs-mark-dark.svg" alt=""></span></div>
+      <h3 class="cf-name">Spectrum Commander</h3>
+      <ul class="cf-moves"><li><span><b>Auto-licence</b><i>mission critical comms</i></span><em>Automated</em></li><li><span><b>Drone Squadron</b><i>robotics as a service</i></span><em>5G</em></li></ul>
+      <p class="cf-weak"><b>Weakness</b> NDAs</p>
+      <p class="cf-flav">Etisalat by e&amp;, 2025 to now</p>
+      <i class="cf-foil" aria-hidden="true"></i><i class="cf-grit" aria-hidden="true"></i>
+    </div>
+    <div class="cf cf-back">
+      <span class="cb-logo"><img src="img/hs-mark-dark.svg" alt=""></span>
+      <div class="cb-panel"><p class="cb-k">Etisalat by e&amp;, 2025 to now</p><h4>Spectrum Commander</h4><p>Turning 5G slicing, drones, push to talk and computer vision into services a business can buy and switch on.</p><a href="#case-eand" class="cb-go">Read the case study</a></div>
+    </div>
+  </div>
+</article>
+<article class="card r-rare" data-card="Night Shift" tabindex="0" role="button" aria-label="Night Shift, tap to flip">
+  <div class="card-in">
+    <div class="cf cf-front">
+      <div class="cf-top"><span class="cf-rar"><i></i>Rare</span><b class="cf-pwr">4<small>experiments</small></b></div>
+      <div class="cf-art"><img src="img/card-night.webp" alt="" loading="lazy" decoding="async"><span class="cf-cls">AI lab</span><span class="cf-crest"><img src="img/hs-mark-dark.svg" alt=""></span></div>
+      <h3 class="cf-name">Night Shift</h3>
+      <ul class="cf-moves"><li><span><b>Co-op Netcode</b><i>host phone is the server</i></span><em>30/s</em></li><li><span><b>Spec to Prototype</b><i>built with Claude</i></span><em>4</em></li></ul>
+      <p class="cf-weak"><b>Weakness</b> Sleep</p>
+      <p class="cf-flav">AI experiments, after hours</p>
+      <i class="cf-foil" aria-hidden="true"></i><i class="cf-grit" aria-hidden="true"></i>
+    </div>
+    <div class="cf cf-back">
+      <span class="cb-logo"><img src="img/hs-mark-dark.svg" alt=""></span>
+      <div class="cb-panel"><p class="cb-k">AI experiments, after hours</p><h4>Night Shift</h4><p>Small builds that keep me close to the technology: a co-op game, a movie recommender, a field radio and a mesh demo.</p><a href="#builds" class="cb-go">Open the AI lab</a></div>
+    </div>
+  </div>
+</article>
+      </div>
+    </section>
     <section class="sec" id="what">
       <div class="shead"><h2 class="dec">What I do</h2><span>Four layers, from the network up</span></div>
       <p class="intro">I'm a product manager with nine years in telecom across Jordan and the UAE. Most of that time has gone into 0 to 1 work: turning network capacity, latency and billing rails into products that didn't exist in the market until we launched them. Alongside it I run small AI experiments, which keep me close to the technology and make me a sharper product manager.</p>
@@ -1469,6 +1636,23 @@ if(!reduce && "IntersectionObserver" in window){
   let vis=true; const set=()=>en.classList.toggle("paused",!vis||document.hidden);
   if("IntersectionObserver" in window) new IntersectionObserver(es=>{ vis=es[0].isIntersecting; set(); }).observe(hero);
   document.addEventListener("visibilitychange",set);
+})();
+
+/* ---------- My deck: tilt + holo foil follow the pointer, tap flips ---------- */
+(function(){
+  const cards=[...document.querySelectorAll(".card")]; if(!cards.length) return;
+  const fine=matchMedia("(hover:hover) and (pointer:fine)").matches;
+  cards.forEach(c=>{
+    const flip=e=>{ if(e.target.closest("a")) return; c.classList.toggle("flip"); if(window.track) track("Card flip",{card:c.dataset.card,side:c.classList.contains("flip")?"back":"front"}); };
+    c.addEventListener("click",flip);
+    c.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); flip(e); } });
+    if(!fine||reduce) return;
+    let raf=0, px=.5, py=.5;
+    const paint=()=>{ raf=0; c.style.setProperty("--ry",((px-.5)*22).toFixed(2)+"deg"); c.style.setProperty("--rx",((.5-py)*18).toFixed(2)+"deg"); c.style.setProperty("--mx",(px*100).toFixed(1)+"%"); c.style.setProperty("--my",(py*100).toFixed(1)+"%"); };
+    c.addEventListener("pointerenter",()=>{ c.classList.add("tilt"); c.style.setProperty("--fo",1); });
+    c.addEventListener("pointermove",e=>{ const r=c.getBoundingClientRect(); px=(e.clientX-r.left)/r.width; py=(e.clientY-r.top)/r.height; if(!raf) raf=requestAnimationFrame(paint); });
+    c.addEventListener("pointerleave",()=>{ c.classList.remove("tilt"); c.style.setProperty("--fo",0); c.style.setProperty("--rx","0deg"); c.style.setProperty("--ry","0deg"); });
+  });
 })();
 /* career path lights up as you scroll */
 const pathEls=[...document.querySelectorAll("#path li")];
