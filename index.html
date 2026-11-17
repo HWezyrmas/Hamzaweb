@@ -1077,6 +1077,18 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .tc.flare .tc-b::after{animation:tcFlare 1.5s ease-out both}
 @keyframes tcFlare{0%{opacity:0}10%{opacity:1}40%{opacity:.6}100%{opacity:0}}
 .tc-dis{position:absolute;inset:0;z-index:6;pointer-events:none;background:url(img/card3-back.webp) center/cover;-webkit-mask-image:linear-gradient(180deg,transparent 0 36%,#000 64% 100%);mask-image:linear-gradient(180deg,transparent 0 36%,#000 64% 100%);-webkit-mask-size:100% 280%;mask-size:100% 280%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:0 100%;mask-position:0 100%}
+/* ---------- AI lab: teaser for the next game ---------- */
+.tease{position:relative;margin-top:clamp(28px,4vw,48px);border-radius:22px;overflow:hidden;aspect-ratio:16/9;background:#06031a;border:1px solid rgba(60,255,208,.28);box-shadow:0 0 0 1px #000,0 0 40px rgba(60,255,208,.12),0 30px 60px rgba(6,3,26,.35);isolation:isolate}
+.tease img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;transform:scale(1.04);animation:teaseDrift 18s ease-in-out infinite alternate}
+@keyframes teaseDrift{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.12) translate3d(-1.5%,-1%,0)}}
+.tease::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(6,3,26,.95) 0%,rgba(6,3,26,.55) 30%,transparent 58%)}
+.tease-txt{position:absolute;z-index:2;left:clamp(18px,3vw,36px);right:clamp(18px,3vw,36px);bottom:clamp(18px,3vw,32px);color:#fff}
+.tease-pill{display:inline-block;padding:6px 12px;border-radius:999px;font-family:var(--f-display);font-weight:700;font-size:13px;color:#06031a;background:#3cffd0;box-shadow:0 0 0 0 rgba(60,255,208,.6);animation:teasePulse 2.4s ease-out infinite}
+@keyframes teasePulse{0%{box-shadow:0 0 0 0 rgba(60,255,208,.55)}70%,100%{box-shadow:0 0 0 14px rgba(60,255,208,0)}}
+.tease-txt h3{margin:12px 0 0;font-family:var(--f-mast);font-weight:900;font-size:clamp(26px,4vw,48px);line-height:.95;text-transform:uppercase;letter-spacing:.01em}
+.tease-txt p{margin:8px 0 0;font-family:var(--f-display);font-size:clamp(15px,1.6vw,18px);color:#cfc9f5}
+@media (max-width:760px){.tease{aspect-ratio:4/5;border-radius:16px}.tease img{object-position:50% 30%}}
+@media (prefers-reduced-motion:reduce){.tease img,.tease-pill{animation:none}}
 /* ---------- deck cards v2: flat neon art on black slabs, glowing stat ---------- */
 .tc.r-leg{--c1:#3cffd0}.tc.r-epic{--c1:#b98cff}.tc.r-rare{--c1:#f2e3c2}
 .tc-f,.tc-b{background:#000;border:2px solid color-mix(in srgb,var(--c1) 55%,#1a0b3d);box-shadow:0 0 0 1px #000,0 0 18px color-mix(in srgb,var(--c1) 28%,transparent),0 24px 50px rgba(0,0,0,.6)}
@@ -1369,6 +1381,14 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
         <div class="adock" id="adock" role="toolbar" aria-label="Choose an experiment"></div>
         <p class="rd" aria-hidden="true">Read down <svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
         <div class="awin" id="awin" aria-live="polite"></div>
+      </div>
+      <div class="tease" id="tease">
+        <img src="img/game-teaser.webp" srcset="img/game-teaser-s.webp 800w, img/game-teaser.webp 1600w" sizes="(max-width:760px) 100vw, 1100px" alt="Key art for an upcoming game: mythic heroes with glowing tech gear under a full moon" loading="lazy" decoding="async">
+        <div class="tease-txt">
+          <span class="tease-pill">Coming soon</span>
+          <h3>Next experiment: a new game</h3>
+          <p>Old gods, new tech. My next build with AI.</p>
+        </div>
       </div>
     </section>
   </div>
