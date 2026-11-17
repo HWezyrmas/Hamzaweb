@@ -1070,6 +1070,13 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .reel-dots{position:relative;z-index:12}
 @media (max-width:760px){.reel-fx{--W:min(64vw,260px)}}
 @media (prefers-reduced-motion:reduce){.rv{display:none}}
+/* ---------- deck reveal: drop-in rays, emblem flare, top-down dissolve ---------- */
+.reel.pre .tc{visibility:hidden}
+.tc-rays{position:absolute;left:50%;top:46%;width:270%;aspect-ratio:1;border-radius:50%;pointer-events:none;opacity:0;transform:translate(-50%,-50%) translateZ(-2px);background:radial-gradient(circle,color-mix(in srgb,var(--c1) 55%,#fff) 0,color-mix(in srgb,var(--c1) 35%,transparent) 14%,transparent 30%),repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c1) 65%,#fff) 0deg 2.5deg,transparent 2.5deg 13deg);-webkit-mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.55) 24%,transparent 58%);mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.55) 24%,transparent 58%)}
+.tc-b::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 46%,#fff 0,color-mix(in srgb,var(--c1) 75%,#fff) 10%,color-mix(in srgb,var(--c1) 40%,transparent) 30%,transparent 58%);mix-blend-mode:screen}
+.tc.flare .tc-b::after{animation:tcFlare 1.5s ease-out both}
+@keyframes tcFlare{0%{opacity:0}10%{opacity:1}40%{opacity:.6}100%{opacity:0}}
+.tc-dis{position:absolute;inset:0;z-index:6;pointer-events:none;background:url(img/card2-back.webp) center/cover;-webkit-mask-image:linear-gradient(180deg,transparent 0 36%,#000 64% 100%);mask-image:linear-gradient(180deg,transparent 0 36%,#000 64% 100%);-webkit-mask-size:100% 280%;mask-size:100% 280%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:0 100%;mask-position:0 100%}
 /* ---------- deck cards v2: flat neon art on black slabs, glowing stat ---------- */
 .tc.r-leg{--c1:#3cff6e}.tc.r-epic{--c1:#ff3fb4}.tc.r-rare{--c1:#1fe0b8}
 .tc-f,.tc-b{background:#000;border:2px solid color-mix(in srgb,var(--c1) 55%,#1a0b3d);box-shadow:0 0 0 1px #000,0 0 18px color-mix(in srgb,var(--c1) 28%,transparent),0 24px 50px rgba(0,0,0,.6)}
@@ -1670,18 +1677,37 @@ if(!reduce && "IntersectionObserver" in window){
   function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd){ excite(fwd<=N/2?1:-1,user?1:.45); streak(); } layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
   function tick(){ if(inView&&!document.hidden&&performance.now()>holdUntil) go(cur+1); }
   function start(){ clearInterval(timer); if(!reduce) timer=setInterval(tick,3200); }
+  /* reveal: backs drop in one by one with a burst of light rays, the emblem flares and cools, then the centre card dissolves top-down into its art */
+  function rays(c,delay){ const r=document.createElement("i"); r.className="tc-rays"; c.appendChild(r);
+    const T="translate(-50%,-50%) translateZ(-2px)";
+    r.animate([{opacity:0,transform:T+" scale(.3) rotate(0deg)"},{opacity:.95,transform:T+" scale(1) rotate(8deg)",offset:.22},{opacity:0,transform:T+" scale(1.18) rotate(20deg)"}],{duration:1100,delay,easing:"cubic-bezier(.2,.7,.3,1)",fill:"both"}).onfinish=()=>r.remove(); }
+  function dissolve(c){
+    const tin=c.querySelector(".tc-in"), ov=document.createElement("span"); ov.className="tc-dis"; c.querySelector(".tc-f").appendChild(ov);
+    tin.style.transition="none"; c.classList.remove("down"); void tin.offsetWidth; tin.style.transition="";
+    feature();
+    ov.animate([{maskPosition:"0 100%",webkitMaskPosition:"0 100%"},{maskPosition:"0 0%",webkitMaskPosition:"0 0%"}],{duration:820,easing:"cubic-bezier(.45,0,.35,1)",fill:"forwards"}).onfinish=()=>ov.remove();
+  }
   function deal(){
-    dealt=true;
-    cards.forEach((c,i)=>{ c.classList.add("down","jump"); c.style.transform=`perspective(1400px) translateY(40px) rotateZ(${(i-2.5)*3}deg) scale(.9)`; c.style.opacity=1; c.style.zIndex=i; });
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{ cards.forEach(c=>c.classList.remove("jump")); layout();
-      setTimeout(()=>{ cards[cur].classList.remove("down"); feature(); },450);
-      setTimeout(()=>{ reel.classList.add("nudge"); setTimeout(()=>reel.classList.remove("nudge"),1000); },1250);
-      setTimeout(start,1400); }));
+    const mob=innerWidth<=760;
+    cards.forEach(c=>c.classList.add("down","jump")); layout(); dealt=true;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>cards.forEach(c=>c.classList.remove("jump"))));
+    const vis=cards.filter((c,i)=>{ c._d=off(i); return Math.abs(c._d)<=(mob?1:2); }).sort((a,b)=>a._d-b._d);
+    const STEP=mob?190:160, DROP=520;
+    vis.forEach((c,k)=>{ const delay=120+k*STEP, T=c.style.transform, op=+c.style.opacity||1;
+      c.animate([{opacity:0,transform:T+" translateY(-150px) scale(1.04)"},{opacity:op,offset:.45},{transform:T+" translateY(10px)",offset:.78},{opacity:op,transform:T}],{duration:DROP,delay,easing:"cubic-bezier(.35,0,.25,1)",fill:"backwards"});
+      rays(c,delay+DROP*.62);
+      setTimeout(()=>{ c.classList.add("flare"); setTimeout(()=>c.classList.remove("flare"),1600); if(window.__nebKick) window.__nebKick(0,.35); },delay+DROP*.7); });
+    reel.classList.remove("pre");
+    const landed=120+(vis.length-1)*STEP+DROP;
+    setTimeout(()=>dissolve(cards[cur]),landed+650);
+    const end=landed+650+820;
+    setTimeout(()=>{ reel.classList.add("nudge"); setTimeout(()=>reel.classList.remove("nudge"),1000); },end+350);
+    setTimeout(start,end+500);
   }
   if(reduce){ dealt=true; layout(); feature(); }
   else if("IntersectionObserver" in window){
     new IntersectionObserver(es=>{ inView=es[0].isIntersecting; document.getElementById("deck").classList.toggle("paused",!inView); light(inView); if(inView&&!dealt) deal(); },{threshold:.35}).observe(reel);
-    cards.forEach(c=>c.classList.add("down")); layout();
+    cards.forEach(c=>c.classList.add("down")); reel.classList.add("pre"); layout();
   } else { dealt=true; layout(); feature(); start(); inView=true; }
   /* interaction: tap a side card to bring it forward, tap the middle one to open it; swipe to move */
   cards.forEach((c,i)=>c.addEventListener("click",e=>{ if(off(i)!==0){ e.preventDefault(); go(i,true); } else if(window.track) track("Deck: open card",{card:c.dataset.card}); }));
