@@ -1005,8 +1005,14 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 @media (prefers-reduced-motion:reduce){.h-energy *{animation:none}}
 /* ---------- My deck: auto-playing card reel ---------- */
 .deck-band{position:relative;overflow:hidden;isolation:isolate;padding:clamp(56px,8vw,96px) 0 clamp(44px,6vw,72px);color:#fff;background:#06031a}
-.deck-band::before{content:"";position:absolute;inset:0;z-index:-1;background:url(img/card-nebula.webp) center/cover;opacity:.45}
-.deck-band::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#06031a 0%,rgba(6,3,26,.35) 30%,rgba(6,3,26,.35) 70%,#06031a 100%)}
+.deck-neb{position:absolute;inset:-14%;z-index:-2;pointer-events:none;transform:translate3d(var(--kx,0px),0,0) scale(var(--ks,1));will-change:transform}
+.deck-neb i{position:absolute;inset:0;background:url(img/card-nebula.webp) center/cover;will-change:transform}
+.deck-neb .n1{opacity:.45;animation:nebDrift 38s ease-in-out infinite alternate}
+.deck-neb .n2{opacity:var(--ke,0);mix-blend-mode:screen;transform:scale(1.04);animation:nebDrift 38s ease-in-out infinite alternate}
+@keyframes nebDrift{from{transform:translate3d(-3%,-2%,0) scale(1.02) rotate(-1deg)}to{transform:translate3d(3%,2%,0) scale(1.08) rotate(1deg)}}
+.deck-band.paused .deck-neb i{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.deck-neb i{animation:none}}
+.deck-band::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#06031a 0%,rgba(6,3,26,.35) 30%,rgba(6,3,26,.35) 70%,#06031a 100%)}
 .deck-head{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,40px);text-align:center}
 .deck-head h2{margin:0;font-family:var(--f-mast);font-weight:900;text-transform:uppercase;font-size:clamp(48px,7vw,88px);line-height:.85;letter-spacing:.01em}
 .deck-head p{margin:12px auto 0;max-width:46ch;font-size:16px;line-height:1.5;color:#cfc9ee}
@@ -1109,6 +1115,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
   </nav>
 
 <section class="deck-band" id="deck">
+  <div class="deck-neb" id="deckNeb" aria-hidden="true"><i class="n1"></i><i class="n2"></i></div>
   <div class="deck-head"><h2>My deck</h2><p>Six cards, one for each product I'm proud of. Tap the middle card to open its story.</p></div>
   <div class="reel" id="reel">
 <a class="tc r-leg" href="#case-gfn" data-i="0" data-card="Cloud Summoner" aria-label="Cloud Summoner: 500+ subscribers at launch">
@@ -1610,7 +1617,14 @@ if(!reduce && "IntersectionObserver" in window){
     (function f(t){ const p=Math.min(1,(t-t0)/700), e=1-Math.pow(1-p,3); el.textContent=(to*e).toFixed(dec)+suf; if(p<1) requestAnimationFrame(f); })(t0);
   }
   function feature(){ cards.forEach((c,i)=>{ const h=i===cur; if(h&&!c.classList.contains("hot")){ c.classList.add("hot"); countUp(c.querySelector(".tc-num")); } else if(!h) c.classList.remove("hot"); }); }
-  function go(i,user){ cur=(i%N+N)%N; layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
+  /* the energy behind the deck surges in the swipe direction, then springs back and calms */
+  const neb=document.getElementById("deckNeb"); let nx=0, nv=0, nraf=0;
+  function nebStep(){ const a=-.045*nx-.11*nv; nv+=a; nx+=nv; const e=Math.min(1,Math.abs(nv)/9+Math.abs(nx)/140);
+    neb.style.setProperty("--kx",nx.toFixed(1)+"px"); neb.style.setProperty("--ks",(1+e*.05).toFixed(3)); neb.style.setProperty("--ke",(e*.85).toFixed(3));
+    if(Math.abs(nx)<.3&&Math.abs(nv)<.05){ nx=nv=0; neb.style.setProperty("--kx","0px"); neb.style.setProperty("--ks",1); neb.style.setProperty("--ke",0); nraf=0; return; }
+    nraf=requestAnimationFrame(nebStep); }
+  function excite(dir,amt){ if(!neb||reduce) return; nv+=-dir*16*amt; if(!nraf) nraf=requestAnimationFrame(nebStep); }
+  function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd) excite(fwd<=N/2?1:-1,user?1:.45); layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
   function tick(){ if(inView&&!document.hidden&&performance.now()>holdUntil) go(cur+1); }
   function start(){ clearInterval(timer); if(!reduce) timer=setInterval(tick,3200); }
   function deal(){
@@ -1623,7 +1637,7 @@ if(!reduce && "IntersectionObserver" in window){
   }
   if(reduce){ dealt=true; layout(); feature(); }
   else if("IntersectionObserver" in window){
-    new IntersectionObserver(es=>{ inView=es[0].isIntersecting; if(inView&&!dealt) deal(); },{threshold:.35}).observe(reel);
+    new IntersectionObserver(es=>{ inView=es[0].isIntersecting; document.getElementById("deck").classList.toggle("paused",!inView); if(inView&&!dealt) deal(); },{threshold:.35}).observe(reel);
     cards.forEach(c=>c.classList.add("down")); layout();
   } else { dealt=true; layout(); feature(); start(); inView=true; }
   /* interaction: tap a side card to bring it forward, tap the middle one to open it; swipe to move */
