@@ -1061,7 +1061,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 /* ---------- deck light: shimmer aura behind the featured card, light splash under it ---------- */
 .reel-fx{--W:clamp(220px,22vw,290px);position:relative;height:0;margin:0;pointer-events:none}
 .rv{position:absolute;left:50%;pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity .8s ease}
-.rv-aura{width:calc(var(--W)*5.2);margin-left:calc(var(--W)*-2.6);top:calc(64px + var(--W)*.69 - var(--W)*2.6)}
+.rv-aura{width:calc(var(--W)*3.8);margin-left:calc(var(--W)*-1.9);top:calc(64px + var(--W)*.6 - var(--W)*1.9)}
 .reel-fx::before{content:"";position:absolute;pointer-events:none;left:50%;width:calc(var(--W)*4);height:calc(var(--W)*2.6);margin-left:calc(var(--W)*-2);top:calc(64px + var(--W)*.75 - var(--W)*1.3);background:radial-gradient(closest-side,rgba(3,1,12,.95) 40%,rgba(3,1,12,.7) 65%,transparent 100%);opacity:0;transition:opacity .8s ease}
 .reel-fx.lit::before{opacity:1}
 .reel{perspective:none}
@@ -1162,7 +1162,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 <section class="deck-band" id="deck">
   <div class="deck-neb" id="deckNeb" aria-hidden="true"><i class="n1"></i><i class="n2"></i><canvas class="neb-gl" id="nebGl"></canvas></div>
   <div class="deck-head"><h2>My deck</h2><p>Six cards, one for each product I'm proud of. Tap the middle card to open its story.</p></div>
-  <div class="reel-fx" aria-hidden="true"><video class="rv rv-aura" id="rvAura" muted loop playsinline preload="none" aria-hidden="true"><source src="img/shimmer.mp4" type="video/mp4"><source src="img/shimmer.webm" type="video/webm"></video></div>
+  <div class="reel-fx" aria-hidden="true"><video class="rv rv-aura" id="rvAura" muted loop playsinline preload="none" aria-hidden="true"><source src="img/aurora.mp4" type="video/mp4"><source src="img/aurora.webm" type="video/webm"></video></div>
   <div class="reel" id="reel">
 <a class="tc r-leg" href="#case-gfn" data-i="0" data-card="Cloud Summoner" aria-label="Cloud Summoner: 500+ subscribers at launch">
   <span class="tc-in">
