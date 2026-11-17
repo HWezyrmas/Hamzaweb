@@ -1024,6 +1024,14 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .tc{--c1:#3cffd0;position:absolute;left:50%;top:30px;width:var(--W);aspect-ratio:3/4;margin-left:calc(var(--W)/-2);text-decoration:none;color:#fff;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,1.2,.36,1),opacity .5s;-webkit-tap-highlight-color:transparent}
 .tc.r-leg{--c1:#ffcf5a}.tc.r-epic{--c1:#ff4fd8}.tc.r-rare{--c1:#3cffd0}
 .tc.jump{transition:none}
+/* motion blur: pre-baked horizontal streak copies, cross-faded with opacity only (GPU), never a live filter */
+.tc-mb{position:absolute;top:0;left:-15%;width:130%;height:100%;max-width:none;opacity:0;pointer-events:none;-webkit-backface-visibility:hidden;backface-visibility:hidden;transform:translateZ(1px)}
+.tc-mb.mbb{transform:rotateY(180deg) translateZ(1px)}
+.tc.mb .tc-mb{animation:mbOn .62s cubic-bezier(.3,0,.4,1) both}
+.tc.mb .tc-f,.tc.mb .tc-b{animation:mbOff .62s cubic-bezier(.3,0,.4,1) both}
+@keyframes mbOn{0%{opacity:0}9%{opacity:1}30%{opacity:.95}100%{opacity:0}}
+@keyframes mbOff{0%{opacity:1}9%{opacity:.25}26%{opacity:.4}48%{opacity:1}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.tc-mb{display:none}}
 .tc-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,1.3,.5,1)}
 .tc.down .tc-in{transform:rotateY(180deg)}
 .tc-f,.tc-b{position:absolute;inset:0;border-radius:18px;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;border:3px solid var(--c1);box-shadow:0 0 0 1px #000,0 0 26px color-mix(in srgb,var(--c1) 45%,transparent),0 24px 50px rgba(0,0,0,.55)}
@@ -1127,7 +1135,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
     <span class="tc-f"><img src="img/card-cloud.webp" alt="" loading="lazy" decoding="async"><span class="tc-shade"></span>
       <span class="tc-txt"><b class="tc-num" data-v="500+">500+</b><span class="tc-lab">subscribers at launch</span><span class="tc-name">Cloud Summoner</span><span class="tc-where">Zain Jordan, GeForce NOW</span></span>
       <i class="tc-foil"></i><i class="tc-grit"></i><i class="tc-burst"></i></span>
-    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span>
+    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span><img class="tc-mb mbf" src="img/mb-cloud.webp" alt="" decoding="async"><img class="tc-mb mbb" src="img/mb-back.webp" alt="" decoding="async">
   </span>
 </a>
 <a class="tc r-leg" href="#case-ug" data-i="1" data-card="Latency Hunter" aria-label="Latency Hunter: 1st gaming fiber in Jordan">
@@ -1135,7 +1143,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
     <span class="tc-f"><img src="img/card-latency.webp" alt="" loading="lazy" decoding="async"><span class="tc-shade"></span>
       <span class="tc-txt"><b class="tc-num" data-v="1st">1st</b><span class="tc-lab">gaming fiber in Jordan</span><span class="tc-name">Latency Hunter</span><span class="tc-where">Umniah, UGaming</span></span>
       <i class="tc-foil"></i><i class="tc-grit"></i><i class="tc-burst"></i></span>
-    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span>
+    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span><img class="tc-mb mbf" src="img/mb-latency.webp" alt="" decoding="async"><img class="tc-mb mbb" src="img/mb-back.webp" alt="" decoding="async">
   </span>
 </a>
 <a class="tc r-epic" href="#case-eshop" data-i="2" data-card="Funnel Fixer" aria-label="Funnel Fixer: 1.3% eShop conversion, from 0.7%">
@@ -1143,7 +1151,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
     <span class="tc-f"><img src="img/card-funnel.webp" alt="" loading="lazy" decoding="async"><span class="tc-shade"></span>
       <span class="tc-txt"><b class="tc-num" data-v="1.3%">1.3%</b><span class="tc-lab">eShop conversion, from 0.7%</span><span class="tc-name">Funnel Fixer</span><span class="tc-where">Umniah, eShop</span></span>
       <i class="tc-foil"></i><i class="tc-grit"></i><i class="tc-burst"></i></span>
-    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span>
+    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span><img class="tc-mb mbf" src="img/mb-funnel.webp" alt="" decoding="async"><img class="tc-mb mbb" src="img/mb-back.webp" alt="" decoding="async">
   </span>
 </a>
 <a class="tc r-rare" href="#case-pay" data-i="3" data-card="Deal Maker" aria-label="Deal Maker: 0% instalments at checkout">
@@ -1151,7 +1159,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
     <span class="tc-f"><img src="img/card-deal.webp" alt="" loading="lazy" decoding="async"><span class="tc-shade"></span>
       <span class="tc-txt"><b class="tc-num" data-v="0%">0%</b><span class="tc-lab">instalments at checkout</span><span class="tc-name">Deal Maker</span><span class="tc-where">Umniah × Arab Bank</span></span>
       <i class="tc-foil"></i><i class="tc-grit"></i><i class="tc-burst"></i></span>
-    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span>
+    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span><img class="tc-mb mbf" src="img/mb-deal.webp" alt="" decoding="async"><img class="tc-mb mbb" src="img/mb-back.webp" alt="" decoding="async">
   </span>
 </a>
 <a class="tc r-epic" href="#case-eand" data-i="4" data-card="Spectrum Commander" aria-label="Spectrum Commander: ??? results classified">
@@ -1159,7 +1167,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
     <span class="tc-f"><img src="img/card-spectrum.webp" alt="" loading="lazy" decoding="async"><span class="tc-shade"></span>
       <span class="tc-txt"><b class="tc-num" data-v="???">???</b><span class="tc-lab">results classified</span><span class="tc-name">Spectrum Commander</span><span class="tc-where">e&amp;, 5G for business</span></span>
       <i class="tc-foil"></i><i class="tc-grit"></i><i class="tc-burst"></i></span>
-    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span>
+    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span><img class="tc-mb mbf" src="img/mb-spectrum.webp" alt="" decoding="async"><img class="tc-mb mbb" src="img/mb-back.webp" alt="" decoding="async">
   </span>
 </a>
 <a class="tc r-rare" href="#builds" data-i="5" data-card="Night Shift" aria-label="Night Shift: 4 AI experiments built">
@@ -1167,7 +1175,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
     <span class="tc-f"><img src="img/card-night.webp" alt="" loading="lazy" decoding="async"><span class="tc-shade"></span>
       <span class="tc-txt"><b class="tc-num" data-v="4">4</b><span class="tc-lab">AI experiments built</span><span class="tc-name">Night Shift</span><span class="tc-where">After hours, AI lab</span></span>
       <i class="tc-foil"></i><i class="tc-grit"></i><i class="tc-burst"></i></span>
-    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span>
+    <span class="tc-b"><img src="img/card-back.webp" alt=""><span class="tc-logo"><img src="img/hs-mark-dark.svg" alt=""></span></span><img class="tc-mb mbf" src="img/mb-night.webp" alt="" decoding="async"><img class="tc-mb mbb" src="img/mb-back.webp" alt="" decoding="async">
   </span>
 </a>
   </div>
@@ -1628,7 +1636,9 @@ if(!reduce && "IntersectionObserver" in window){
     if(Math.abs(nx)<.3&&Math.abs(nv)<.05){ nx=nv=0; neb.style.setProperty("--kx","0px"); neb.style.setProperty("--ks",1); neb.style.setProperty("--ke",0); nraf=0; return; }
     nraf=requestAnimationFrame(nebStep); }
   function excite(dir,amt){ if(!neb||reduce) return; if(window.__nebKick){ window.__nebKick(dir,amt); return; } nv+=-dir*16*amt; if(!nraf) nraf=requestAnimationFrame(nebStep); }
-  function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd) excite(fwd<=N/2?1:-1,user?1:.45); layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
+  let mbT=0;
+  function streak(){ if(reduce||!dealt) return; cards.forEach(c=>c.classList.remove("mb")); void reel.offsetWidth; cards.forEach(c=>c.classList.add("mb")); clearTimeout(mbT); mbT=setTimeout(()=>cards.forEach(c=>c.classList.remove("mb")),700); }
+  function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd){ excite(fwd<=N/2?1:-1,user?1:.45); streak(); } layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
   function tick(){ if(inView&&!document.hidden&&performance.now()>holdUntil) go(cur+1); }
   function start(){ clearInterval(timer); if(!reduce) timer=setInterval(tick,3200); }
   function deal(){
