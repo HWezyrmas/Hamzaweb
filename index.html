@@ -1024,6 +1024,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .tc{--c1:#3cffd0;position:absolute;left:50%;top:30px;width:var(--W);aspect-ratio:3/4;margin-left:calc(var(--W)/-2);text-decoration:none;color:#fff;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.22,1.2,.36,1),opacity .5s;-webkit-tap-highlight-color:transparent}
 .tc.r-leg{--c1:#ffcf5a}.tc.r-epic{--c1:#ff4fd8}.tc.r-rare{--c1:#3cffd0}
 .tc.jump{transition:none}
+.reel.blurring .tc-f,.reel.blurring .tc-b{filter:url(#mbx)}
 .tc-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,1.3,.5,1)}
 .tc.down .tc-in{transform:rotateY(180deg)}
 .tc-f,.tc-b{position:absolute;inset:0;border-radius:18px;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;border:3px solid var(--c1);box-shadow:0 0 0 1px #000,0 0 26px color-mix(in srgb,var(--c1) 45%,transparent),0 24px 50px rgba(0,0,0,.55)}
@@ -1121,6 +1122,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 <section class="deck-band" id="deck">
   <div class="deck-neb" id="deckNeb" aria-hidden="true"><i class="n1"></i><i class="n2"></i><canvas class="neb-gl" id="nebGl"></canvas></div>
   <div class="deck-head"><h2>My deck</h2><p>Six cards, one for each product I'm proud of. Tap the middle card to open its story.</p></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="mbx" x="-25%" y="-15%" width="150%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur id="mbxG" stdDeviation="0 0"/></filter></svg>
   <div class="reel" id="reel">
 <a class="tc r-leg" href="#case-gfn" data-i="0" data-card="Cloud Summoner" aria-label="Cloud Summoner: 500+ subscribers at launch">
   <span class="tc-in">
@@ -1628,7 +1630,13 @@ if(!reduce && "IntersectionObserver" in window){
     if(Math.abs(nx)<.3&&Math.abs(nv)<.05){ nx=nv=0; neb.style.setProperty("--kx","0px"); neb.style.setProperty("--ks",1); neb.style.setProperty("--ke",0); nraf=0; return; }
     nraf=requestAnimationFrame(nebStep); }
   function excite(dir,amt){ if(!neb||reduce) return; if(window.__nebKick){ window.__nebKick(dir,amt); return; } nv+=-dir*16*amt; if(!nraf) nraf=requestAnimationFrame(nebStep); }
-  function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd) excite(fwd<=N/2?1:-1,user?1:.45); layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
+  /* horizontal motion blur while the cards travel: strongest at launch, fading as they settle */
+  const mbG=document.getElementById("mbxG"); let mbRaf=0, mbT0=0, mbPeak=0;
+  function mbStep(t){ const p=Math.min(1,(t-mbT0)/620), s=mbPeak*Math.pow(1-p,2.4);
+    mbG.setAttribute("stdDeviation",s.toFixed(1)+" 0");
+    if(p<1){ mbRaf=requestAnimationFrame(mbStep); } else { reel.classList.remove("blurring"); mbG.setAttribute("stdDeviation","0 0"); mbRaf=0; } }
+  function blur(amt){ if(reduce||!mbG) return; const W=cards[0].offsetWidth; mbPeak=W*.05*amt; mbT0=performance.now(); reel.classList.add("blurring"); if(!mbRaf) mbRaf=requestAnimationFrame(mbStep); }
+  function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd){ excite(fwd<=N/2?1:-1,user?1:.45); blur(Math.min(2,(fwd<=N/2?fwd:N-fwd))*(user?1:.7)); } layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
   function tick(){ if(inView&&!document.hidden&&performance.now()>holdUntil) go(cur+1); }
   function start(){ clearInterval(timer); if(!reduce) timer=setInterval(tick,3200); }
   function deal(){
