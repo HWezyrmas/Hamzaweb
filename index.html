@@ -1058,6 +1058,19 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .reel-dots button.on{width:26px;background:var(--mint)}
 .tc-txt{transition:opacity .4s}
 @media (max-width:760px){.reel{--W:min(64vw,260px)}.tc-lab{font-size:13px}.tc-name{font-size:19px}.tc:not(.hot) .tc-txt{opacity:0}}
+/* ---------- deck light: shimmer aura behind the featured card, light splash under it ---------- */
+.reel-fx{--W:clamp(220px,22vw,290px);position:relative;height:0;margin:0;pointer-events:none}
+.rv{position:absolute;left:50%;pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity .8s ease}
+.rv-aura{width:calc(var(--W)*3.4);margin-left:calc(var(--W)*-1.7);top:calc(64px + var(--W)*.6 - var(--W)*1.7)}
+.rv-splash{width:calc(var(--W)*3);margin-left:calc(var(--W)*-1.5);top:calc(64px + var(--W)*1.42 - var(--W)*3*.49)}
+.reel-fx::before{content:"";position:absolute;pointer-events:none;left:50%;width:calc(var(--W)*4);height:calc(var(--W)*2.6);margin-left:calc(var(--W)*-2);top:calc(64px + var(--W)*.75 - var(--W)*1.3);background:radial-gradient(closest-side,rgba(3,1,12,.95) 40%,rgba(3,1,12,.7) 65%,transparent 100%);opacity:0;transition:opacity .8s ease}
+.reel-fx.lit::before{opacity:1}
+.reel{perspective:none}
+.rv-aura{z-index:11}.rv-splash{z-index:9}
+.reel-fx.lit .rv-aura{opacity:.75}.reel-fx.lit .rv-splash{opacity:1}
+.reel-dots{position:relative;z-index:12}
+@media (max-width:760px){.reel-fx{--W:min(64vw,260px)}}
+@media (prefers-reduced-motion:reduce){.rv{display:none}}
 /* ---------- deck cards v2: flat neon art on black slabs, glowing stat ---------- */
 .tc.r-leg{--c1:#3cff6e}.tc.r-epic{--c1:#ff3fb4}.tc.r-rare{--c1:#1fe0b8}
 .tc-f,.tc-b{background:#000;border:2px solid color-mix(in srgb,var(--c1) 55%,#1a0b3d);box-shadow:0 0 0 1px #000,0 0 18px color-mix(in srgb,var(--c1) 28%,transparent),0 24px 50px rgba(0,0,0,.6)}
@@ -1148,6 +1161,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 <section class="deck-band" id="deck">
   <div class="deck-neb" id="deckNeb" aria-hidden="true"><i class="n1"></i><i class="n2"></i><canvas class="neb-gl" id="nebGl"></canvas></div>
   <div class="deck-head"><h2>My deck</h2><p>Six cards, one for each product I'm proud of. Tap the middle card to open its story.</p></div>
+  <div class="reel-fx" aria-hidden="true"><video class="rv rv-aura" id="rvAura" muted loop playsinline preload="none" aria-hidden="true"><source src="img/shimmer.mp4" type="video/mp4"><source src="img/shimmer.webm" type="video/webm"></video><video class="rv rv-splash" id="rvSplash" muted loop playsinline preload="none" aria-hidden="true"><source src="img/splash.mp4" type="video/mp4"><source src="img/splash.webm" type="video/webm"></video></div>
   <div class="reel" id="reel">
 <a class="tc r-leg" href="#case-gfn" data-i="0" data-card="Cloud Summoner" aria-label="Cloud Summoner: 500+ subscribers at launch">
   <span class="tc-in">
@@ -1634,7 +1648,7 @@ if(!reduce && "IntersectionObserver" in window){
       if(Math.abs(d-prevOff[i])>1){ c.classList.add("jump"); requestAnimationFrame(()=>requestAnimationFrame(()=>c.classList.remove("jump"))); }
       prevOff[i]=d;
       const vis=a<=(mob?1:2);
-      c.style.transform=`translateX(${d*step}px) translateZ(${-a*120}px) rotateY(${-d*14}deg) scale(${d===0?1.06:1})`;
+      c.style.transform=`perspective(1400px) translateX(${d*step}px) translateZ(${-a*120}px) rotateY(${-d*14}deg) scale(${d===0?1.06:1})`;
       c.style.opacity=vis?(d===0?1:a===1?.6:.3):0; c.style.zIndex=10-a; c.style.pointerEvents=vis?"auto":"none";
       c.tabIndex=d===0?0:-1; if(d!==0) c.classList.add("down"); });
     if(dealt){ clearTimeout(upT); const nc=cards[cur]; upT=setTimeout(()=>nc.classList.remove("down"),260); }
@@ -1657,12 +1671,15 @@ if(!reduce && "IntersectionObserver" in window){
   function excite(dir,amt){ if(!neb||reduce) return; if(window.__nebKick){ window.__nebKick(dir,amt); return; } nv+=-dir*16*amt; if(!nraf) nraf=requestAnimationFrame(nebStep); }
   let mbT=0;
   function streak(){ if(reduce||!dealt) return; cards.forEach(c=>c.classList.remove("mb")); void reel.offsetWidth; cards.forEach(c=>c.classList.add("mb")); clearTimeout(mbT); mbT=setTimeout(()=>cards.forEach(c=>c.classList.remove("mb")),700); }
-  function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd){ excite(fwd<=N/2?1:-1,user?1:.45); streak(); } layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
+  const rvA=document.getElementById("rvAura"), rvS=document.getElementById("rvSplash");
+  function light(on){ if(reduce||!rvA) return; [rvA,rvS].forEach(v=>{ if(on){ if(v.preload!=="auto"){ v.preload="auto"; v.load(); } const p=v.play(); if(p&&p.catch) p.catch(()=>{}); } else v.pause(); }); reel.previousElementSibling.classList.toggle("lit",on); }
+  function surge(){ if(reduce||!rvS||!reel.previousElementSibling.classList.contains("lit")) return; rvS.animate([{opacity:1,transform:"scale(1)"},{opacity:1,transform:"scale(1.12)",offset:.25},{opacity:1,transform:"scale(1)"}],{duration:1300,easing:"ease-out"}); }
+  function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd){ excite(fwd<=N/2?1:-1,user?1:.45); streak(); surge(); } layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
   function tick(){ if(inView&&!document.hidden&&performance.now()>holdUntil) go(cur+1); }
   function start(){ clearInterval(timer); if(!reduce) timer=setInterval(tick,3200); }
   function deal(){
     dealt=true;
-    cards.forEach((c,i)=>{ c.classList.add("down","jump"); c.style.transform=`translateY(40px) rotateZ(${(i-2.5)*3}deg) scale(.9)`; c.style.opacity=1; c.style.zIndex=i; });
+    cards.forEach((c,i)=>{ c.classList.add("down","jump"); c.style.transform=`perspective(1400px) translateY(40px) rotateZ(${(i-2.5)*3}deg) scale(.9)`; c.style.opacity=1; c.style.zIndex=i; });
     requestAnimationFrame(()=>requestAnimationFrame(()=>{ cards.forEach(c=>c.classList.remove("jump")); layout();
       setTimeout(()=>{ cards[cur].classList.remove("down"); feature(); },450);
       setTimeout(()=>{ reel.classList.add("nudge"); setTimeout(()=>reel.classList.remove("nudge"),1000); },1250);
@@ -1670,7 +1687,7 @@ if(!reduce && "IntersectionObserver" in window){
   }
   if(reduce){ dealt=true; layout(); feature(); }
   else if("IntersectionObserver" in window){
-    new IntersectionObserver(es=>{ inView=es[0].isIntersecting; document.getElementById("deck").classList.toggle("paused",!inView); if(inView&&!dealt) deal(); },{threshold:.35}).observe(reel);
+    new IntersectionObserver(es=>{ inView=es[0].isIntersecting; document.getElementById("deck").classList.toggle("paused",!inView); light(inView); if(inView&&!dealt) deal(); },{threshold:.35}).observe(reel);
     cards.forEach(c=>c.classList.add("down")); layout();
   } else { dealt=true; layout(); feature(); start(); inView=true; }
   /* interaction: tap a side card to bring it forward, tap the middle one to open it; swipe to move */
