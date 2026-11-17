@@ -696,8 +696,7 @@ body.shake main{animation:shake .5s linear 2}
 .hsi.out .intro-skip{display:none}
 html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:hidden}
 .h-logo{display:inline-block;flex:none;height:var(--lh);width:calc(var(--lh)*var(--la,.9));position:relative;isolation:isolate}
-.h-logo canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1}
-.h-logo .intro-stage{filter:drop-shadow(0 0 calc(3px + 4px*var(--g,0)) rgba(60,255,208,calc(.45 + .45*var(--g,0)))) drop-shadow(0 0 calc(10px + 18px*var(--g,0)) rgba(110,50,255,calc(.35 + .4*var(--g,0))))}
+.h-logo canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1;filter:drop-shadow(0 0 calc(3px + 4px*var(--g,0)) rgba(60,255,208,calc(.45 + .45*var(--g,0)))) drop-shadow(0 0 calc(10px + 18px*var(--g,0)) rgba(110,50,255,calc(.35 + .4*var(--g,0))))}
 .h-halo{position:absolute;inset:-14px;z-index:0;border-radius:50%;background:radial-gradient(closest-side,rgba(60,255,208,.35),rgba(82,0,255,.22) 55%,transparent 75%);filter:blur(10px);opacity:calc(.12 + .88*var(--g,0));transform:scale(calc(.9 + .25*var(--g,0)))}
 .h-pill{font-family:var(--f-display);font-weight:600;font-size:14.5px;text-decoration:none;color:#fff;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background .2s,border-color .2s}
 .h-pill:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}
@@ -1042,14 +1041,6 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .tc-txt{transition:opacity .4s}
 @media (max-width:760px){.reel{--W:min(64vw,260px)}.tc-lab{font-size:13px}.tc-name{font-size:19px}.tc:not(.hot) .tc-txt{opacity:0}}
 @media (prefers-reduced-motion:reduce){.tc,.tc-in{transition:none}.tc.hot .tc-foil,.tc.hot .tc-burst{animation:none}}
-/* ---------- logo: glass tiles over the live 3D mark, pre-rendered sprites, CSS only ---------- */
-.h-logo.tiles canvas{-webkit-mask:url(img/logo-mask.png) 0 0/7400% 100% no-repeat;mask:url(img/logo-mask.png) 0 0/7400% 100% no-repeat;animation:ltMask 9s 1s infinite}
-.lt-glass{position:absolute;inset:0;z-index:2;pointer-events:none;background:url(img/logo-glass.png) 0 0/7400% 100% no-repeat;opacity:0}
-.h-logo.tiles .lt-glass{opacity:1;animation:ltGlass 9s 1s infinite}
-@keyframes ltMask{0%,67.5%{-webkit-mask-position:0 0;mask-position:0 0;animation-timing-function:steps(73,end)}100%{-webkit-mask-position:100% 0;mask-position:100% 0}}
-@keyframes ltGlass{0%,67.5%{background-position:0 0;animation-timing-function:steps(73,end)}100%{background-position:100% 0}}
-.h-logo.paused canvas,.h-logo.paused .lt-glass{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.h-logo.tiles canvas,.h-logo.tiles .lt-glass{animation:none}}
 </style>
 </head>
 <body class="light">
@@ -1628,15 +1619,6 @@ if(!reduce && "IntersectionObserver" in window){
   addEventListener("resize",layout);
 })();
 
-
-/* logo glass tiles: switch on after the intro lands, pause when the hero is off screen */
-(function(){
-  const slot=document.getElementById("hLogo"); if(!slot) return;
-  const on=()=>{ if(!slot.querySelector("canvas")) return; const g=document.createElement("i"); g.className="lt-glass"; g.setAttribute("aria-hidden","true"); slot.appendChild(g); slot.classList.add("tiles"); };
-  if(window.__introDone) setTimeout(on,50); else addEventListener("hsintrodone",()=>setTimeout(on,50),{once:true});
-  const hero=document.getElementById("hero");
-  if(hero&&"IntersectionObserver" in window) new IntersectionObserver(es=>slot.classList.toggle("paused",!es[0].isIntersecting)).observe(hero);
-})();
 /* career path lights up as you scroll */
 const pathEls=[...document.querySelectorAll("#path li")];
 function onScroll(){ pathEls.forEach(p=>p.classList.toggle("lit", p.getBoundingClientRect().top < innerHeight*.7)); }
@@ -2040,32 +2022,13 @@ const HS={targetY:()=>null};
   function grow(m,k){ const d=m.userData; const s=Math.max(.0001,k); m.scale.set(1,1,1); const key=d.ax==="x"?"x":d.ax==="z"?"y":"z"; m.scale[key]=s;
     const len=d.n*s, start=d.dir>0? d.lo : d.lo+d.n; const centerAlong= d.dir>0? start+len/2 : start-len/2; const c={...d.c}; c[d.ax]=centerAlong; m.position.set(c.x-ctr.x,c.z-ctr.y,c.y-ctr.z); m.visible=k>0; }
   const reduceM=reduce;
-  let t0=performance.now(), phase="build", landed=false, pulseT=0, tilesGo=false;
+  let t0=performance.now(), phase="build", landed=false, pulseT=0;
   const BUILD=1.25, TURN=1.0;
   /* the intro plays on every load, campaign visits included */
   if(reduceM) phase="skip";
   document.documentElement.classList.add("intro-lock");
-
-  /* glass-tile sequence on the big intro logo, from a pre-rendered sprite sheet */
-  const IT={N:74,C:10,R:8}, itMask=new Image(), itGlass=new Image(); itMask.src="img/intro-mask.png"; itGlass.src="img/intro-glass.png";
-  let itDone=null;
-  function runIntroTiles(cb){
-    const cv=stage.querySelector("canvas");
-    if(reduce||!cv||!itMask.complete||!itGlass.complete||!itMask.naturalWidth){ cb(); return; }
-    const gl=document.createElement("i"); gl.style.cssText=`position:absolute;inset:0;z-index:2;pointer-events:none;background:url(img/intro-glass.png) 0 0/${IT.C*100}% ${IT.R*100}% no-repeat`;
-    stage.style.position=stage.style.position||""; stage.appendChild(gl);
-    const f0=getComputedStyle(cv).filter; cv.style.filter="none"; stage.style.filter=f0;
-    const ms=`${IT.C*100}% ${IT.R*100}%`;
-    cv.style.webkitMaskImage=cv.style.maskImage="url(img/intro-mask.png)"; cv.style.webkitMaskSize=cv.style.maskSize=ms; cv.style.webkitMaskRepeat=cv.style.maskRepeat="no-repeat";
-    const t0=performance.now(), FR=40/1.45;
-    const end=()=>{ cv.style.webkitMaskImage=cv.style.maskImage=""; cv.style.filter=""; stage.style.filter=""; gl.remove(); itDone=null; };
-    itDone=end;
-    (function f(now){ if(itDone!==end) return; const i=Math.min(IT.N-1,Math.floor((now-t0)/FR)), x=(i%IT.C)/(IT.C-1)*100, y=Math.floor(i/IT.C)/(IT.R-1)*100;
-      const pos=x.toFixed(4)+"% "+y.toFixed(4)+"%"; cv.style.webkitMaskPosition=cv.style.maskPosition=pos; gl.style.backgroundPosition=pos;
-      if(i<IT.N-1) requestAnimationFrame(f); else { end(); cb(); } })(t0);
-  }
   function land(instant){
-    if(landed) return; landed=true; if(itDone) itDone(); phase="current";
+    if(landed) return; landed=true; phase="current";
     meshes.forEach(m=>grow(m,1)); view(ISO_AZ,ISO_EL);
     const r=slot.getBoundingClientRect(), s=stage.getBoundingClientRect();
     document.body.appendChild(stage);
@@ -2094,7 +2057,7 @@ const HS={targetY:()=>null};
       if(k>=1){ phase="snap"; t0=now; flashEl.classList.add("go"); group.scale.setScalar(1.06); }
     } else if(phase==="snap"){
       group.scale.setScalar(1+.06*Math.max(0,1-t/0.35));
-      if(t>.4 && !tilesGo){ tilesGo=true; runIntroTiles(()=>{ if(phase==="snap") land(); }); }
+      if(t>.4) land();
     } else if(phase==="current"){
       { const P=6, c=((now/1000)%P)/P; holoU.uHolo.value=reduceM?0:1; const k=(c>0.62&&c<0.9)?(c-.62)/.28:-1; holoU.uT.value= k>=0? -16+32*k : -99; if(host===slot) slot.style.setProperty('--g', reduceM?0:(k>=0? Math.sin(Math.PI*k).toFixed(3):0)); }
       if(host===slot){ const hr=hero.getBoundingClientRect(); if(hr.bottom<0) return; if(LITE && now-last<33) return; }
