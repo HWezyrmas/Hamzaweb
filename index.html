@@ -1058,19 +1058,6 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .reel-dots button.on{width:26px;background:var(--mint)}
 .tc-txt{transition:opacity .4s}
 @media (max-width:760px){.reel{--W:min(64vw,260px)}.tc-lab{font-size:13px}.tc-name{font-size:19px}.tc:not(.hot) .tc-txt{opacity:0}}
-/* ---------- deck summon: light pillar, energy fill, constellation, drain to reveal ---------- */
-.tc.pre .tc-f,.tc.pre .tc-b{opacity:0}
-.sm{position:absolute;inset:0;pointer-events:none;transform:translateZ(3px)}
-.sm>*{position:absolute;display:block}
-.sm-p{left:8%;right:8%;bottom:-16%;height:240%;transform-origin:50% 100%;opacity:0;background:linear-gradient(0deg,#fff 0%,color-mix(in srgb,var(--c1) 70%,#fff) 10%,color-mix(in srgb,var(--c1) 60%,transparent) 38%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent,#000 28%,#000 72%,transparent);mask-image:linear-gradient(90deg,transparent,#000 28%,#000 72%,transparent)}
-.sm-p::after{content:"";position:absolute;left:40%;right:40%;top:0;bottom:0;background:linear-gradient(0deg,#fff 0%,rgba(255,255,255,.8) 30%,transparent 85%)}
-.sm.big .sm-p{left:-6%;right:-6%;height:300%}
-.sm-e{inset:0;border-radius:18px;transform-origin:50% 100%;transform:scaleY(0);background:radial-gradient(circle at 18% 22%,#fff 0 1.6px,transparent 2.2px),radial-gradient(circle at 72% 14%,#fff 0 1.2px,transparent 1.8px),radial-gradient(circle at 40% 38%,#fff 0 2px,transparent 2.6px),radial-gradient(circle at 84% 46%,#fff 0 1.2px,transparent 1.8px),radial-gradient(circle at 26% 60%,#fff 0 1.4px,transparent 2px),radial-gradient(circle at 62% 70%,#fff 0 1.8px,transparent 2.4px),radial-gradient(circle at 14% 84%,#fff 0 1.2px,transparent 1.8px),radial-gradient(circle at 78% 88%,#fff 0 1.6px,transparent 2.2px),linear-gradient(0deg,#fff 0%,color-mix(in srgb,var(--c1) 75%,#fff) 14%,var(--c1) 42%,color-mix(in srgb,var(--c1) 55%,#1a0b3d) 100%);box-shadow:0 0 26px var(--c1),0 0 64px color-mix(in srgb,var(--c1) 45%,transparent)}
-.sm-c{inset:0;width:100%;height:100%;overflow:visible;opacity:0}
-.sm-c polyline{fill:none;stroke:#fff;stroke-width:.7;stroke-dasharray:1;stroke-dashoffset:1;vector-effect:non-scaling-stroke;stroke-width:1.4px;filter:none}
-.sm-c circle{fill:#fff}
-.sm-f{left:50%;bottom:4%;width:46%;aspect-ratio:1;margin-left:-23%;border-radius:50%;opacity:0;background:radial-gradient(circle,#fff 0,color-mix(in srgb,var(--c1) 70%,#fff) 22%,color-mix(in srgb,var(--c1) 40%,transparent) 48%,transparent 70%)}
-@media (max-width:760px){.sm-e{border-radius:14px}}
 /* ---------- deck cards v2: flat neon art on black slabs, glowing stat ---------- */
 .tc.r-leg{--c1:#3cff6e}.tc.r-epic{--c1:#ff3fb4}.tc.r-rare{--c1:#1fe0b8}
 .tc-f,.tc-b{background:#000;border:2px solid color-mix(in srgb,var(--c1) 55%,#1a0b3d);box-shadow:0 0 0 1px #000,0 0 18px color-mix(in srgb,var(--c1) 28%,transparent),0 24px 50px rgba(0,0,0,.6)}
@@ -1673,38 +1660,18 @@ if(!reduce && "IntersectionObserver" in window){
   function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd){ excite(fwd<=N/2?1:-1,user?1:.45); streak(); } layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
   function tick(){ if(inView&&!document.hidden&&performance.now()>holdUntil) go(cur+1); }
   function start(){ clearInterval(timer); if(!reduce) timer=setInterval(tick,3200); }
-  /* summon: outer cards first, centre last. each one gets a light pillar, fills with energy, then the energy drains to reveal it */
-  function summon(c,delay,big){
-    const pts=[0,1,2,3,4].map(()=>[10+Math.random()*80,12+Math.random()*70]).sort((a,b)=>a[1]-b[1]);
-    const s=document.createElement("span"); s.className="sm"+(big?" big":"");
-    s.innerHTML=`<i class="sm-p"></i><i class="sm-e"></i><svg class="sm-c" viewBox="0 0 100 133" preserveAspectRatio="none"><polyline points="${pts.map(p=>p.join(",")).join(" ")}" pathLength="1"/>${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="1.4"/>`).join("")}</svg><i class="sm-f"></i>`;
-    c.appendChild(s);
-    const q=x=>s.querySelector(x), o=(el,kf,d,dl,e,f)=>el.animate(kf,{duration:d,delay:delay+dl,easing:e||"cubic-bezier(.2,.7,.2,1)",fill:f||"both"});
-    o(q(".sm-p"),[{opacity:0,transform:"scaleY(0)"},{opacity:1,transform:"scaleY(1)",offset:.35},{opacity:1,transform:"scaleY(1)",offset:.55},{opacity:0,transform:"scaleY(1.08)"}],big?1150:950,0);
-    o(q(".sm-e"),[{opacity:1,transform:"scaleY(0)"},{opacity:1,transform:"scaleY(1)"}],300,190,"cubic-bezier(.3,0,.2,1)");
-    o(q(".sm-e"),[{opacity:1,transform:"scaleY(1)"},{opacity:.85,transform:"scaleY(.55)",offset:.45},{opacity:0,transform:"scaleY(0)"}],620,520,"cubic-bezier(.5,0,.6,1)","forwards");
-    const pl=q(".sm-c polyline"); o(pl,[{strokeDashoffset:1},{strokeDashoffset:0}],450,260);
-    o(q(".sm-c"),[{opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.6},{opacity:0}],900,240,"linear");
-    o(q(".sm-f"),[{opacity:0,transform:"scale(.2)"},{opacity:1,transform:"scale(1)",offset:.2},{opacity:0,transform:`scale(${big?4.2:3})`}],560,480,"cubic-bezier(.1,.7,.3,1)");
-    const faces=[...c.querySelectorAll(".tc-f,.tc-b")].map(f=>f.animate([{opacity:0},{opacity:1}],{duration:140,delay:delay+470,fill:"both"}));
-    setTimeout(()=>{ if(window.__nebKick) window.__nebKick(c._d<0?-1:c._d>0?1:0,big?.9:.45); if(big) feature(); },delay+480);
-    setTimeout(()=>{ c.classList.remove("pre"); faces.forEach(a=>a.cancel()); s.remove(); },delay+(big?1250:1180));
-  }
   function deal(){
     dealt=true;
-    cards.forEach(c=>c.classList.add("jump","pre")); layout();
-    requestAnimationFrame(()=>requestAnimationFrame(()=>cards.forEach(c=>c.classList.remove("jump"))));
-    const mob=innerWidth<=760, vis=cards.filter((c,i)=>{ c._d=off(i); return Math.abs(c._d)<=(mob?1:2); }).sort((a,b)=>Math.abs(b._d)-Math.abs(a._d)||a._d-b._d);
-    cards.forEach(c=>{ if(!vis.includes(c)) c.classList.remove("pre"); });
-    const STEP=230; vis.forEach((c,k)=>summon(c,120+k*STEP,c._d===0));
-    const end=120+(vis.length-1)*STEP+1250;
-    setTimeout(()=>{ reel.classList.add("nudge"); setTimeout(()=>reel.classList.remove("nudge"),1000); },end+250);
-    setTimeout(start,end+400);
+    cards.forEach((c,i)=>{ c.classList.add("down","jump"); c.style.transform=`translateY(40px) rotateZ(${(i-2.5)*3}deg) scale(.9)`; c.style.opacity=1; c.style.zIndex=i; });
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ cards.forEach(c=>c.classList.remove("jump")); layout();
+      setTimeout(()=>{ cards[cur].classList.remove("down"); feature(); },450);
+      setTimeout(()=>{ reel.classList.add("nudge"); setTimeout(()=>reel.classList.remove("nudge"),1000); },1250);
+      setTimeout(start,1400); }));
   }
   if(reduce){ dealt=true; layout(); feature(); }
   else if("IntersectionObserver" in window){
     new IntersectionObserver(es=>{ inView=es[0].isIntersecting; document.getElementById("deck").classList.toggle("paused",!inView); if(inView&&!dealt) deal(); },{threshold:.35}).observe(reel);
-    cards.forEach(c=>c.classList.add("down","pre")); layout();
+    cards.forEach(c=>c.classList.add("down")); layout();
   } else { dealt=true; layout(); feature(); start(); inView=true; }
   /* interaction: tap a side card to bring it forward, tap the middle one to open it; swipe to move */
   cards.forEach((c,i)=>c.addEventListener("click",e=>{ if(off(i)!==0){ e.preventDefault(); go(i,true); } else if(window.track) track("Deck: open card",{card:c.dataset.card}); }));
