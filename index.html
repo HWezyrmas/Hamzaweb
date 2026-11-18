@@ -1089,6 +1089,37 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .tease-txt p{margin:8px 0 0;font-family:var(--f-display);font-size:clamp(15px,1.6vw,18px);color:#cfc9f5}
 @media (max-width:760px){.tease{aspect-ratio:4/5;border-radius:16px}.tease img{object-position:50% 30%}}
 @media (prefers-reduced-motion:reduce){.tease img,.tease-pill{animation:none}}
+/* ---------- AI lab: level select (menu on the left, preview on the right) ---------- */
+.desk.ls{display:grid;grid-template-columns:minmax(220px,290px) minmax(0,1fr);gap:clamp(18px,3vw,40px);align-items:start;padding:clamp(18px,3vw,34px)}
+.ls-menu{display:flex;flex-direction:column;gap:4px}
+.ls-it{position:relative;display:grid;grid-template-columns:16px 1fr;align-items:center;column-gap:10px;width:100%;text-align:left;padding:14px 14px 14px 10px;border-radius:12px;border:1px solid transparent;background:transparent;color:#a9a2d8;cursor:pointer;font:inherit;transition:background .25s,color .25s,border-color .25s}
+.ls-car{grid-row:1/3;font-size:12px;color:var(--mint);opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
+.ls-n{font-family:var(--f-mast);font-weight:900;font-size:clamp(21px,2vw,27px);line-height:1;letter-spacing:.02em;text-transform:uppercase}
+.ls-s{grid-column:2;display:flex;align-items:center;gap:6px;margin-top:6px;font-family:var(--f-display);font-size:12.5px;font-weight:600;color:#7dffe0}
+.ls-s.wip{color:#ffd67a}.ls-s.lock{color:#8f86c9}
+.ls-it:hover{color:#fff;background:rgba(255,255,255,.04)}
+.ls-it:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.ls-it.on{color:#fff;background:linear-gradient(90deg,rgba(60,255,208,.16),rgba(60,255,208,0) 85%);border-color:rgba(60,255,208,.35)}
+.ls-it.on .ls-car{opacity:1;transform:none;animation:lsBlink 1s steps(2,jump-none) infinite}
+@keyframes lsBlink{50%{opacity:.15}}
+.ls-it.locked .ls-n{color:#6f68a0}.ls-it.locked.on .ls-n{color:#cfc9f5}
+.ls-view{--lsw:min(70vw,860px)}
+.ls-view .aw-prev{min-height:0;aspect-ratio:16/9;margin-bottom:22px;border-color:rgba(60,255,208,.22)}
+.ls-view .aw-prev.locked img{filter:saturate(.6) brightness(.55)}
+.ls-lock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;font-family:var(--f-display);font-weight:700;font-size:14px;color:#06031a;background:var(--mint);box-shadow:0 0 30px rgba(60,255,208,.45)}
+@media (min-width:761px){.ls-view{min-height:calc(var(--lsw,700px)*.5625 + 440px)}}
+.ls-txt h3{margin:0;font-family:var(--f-display);font-weight:800;font-size:clamp(26px,3vw,34px);line-height:1.02;letter-spacing:-.015em}
+.ls-txt .aw-st{margin:8px 0 14px}
+.aw-st.lock{background:rgba(255,255,255,.08);color:#d6d2f2;border-color:rgba(255,255,255,.22)}
+@media (max-width:760px){
+  .desk.ls{grid-template-columns:1fr;padding:12px}
+  .ls-menu{flex-direction:row;overflow-x:auto;scroll-snap-type:x proximity;gap:6px;margin:0 -12px;padding:2px 12px 6px;scrollbar-width:none}
+  .ls-menu::-webkit-scrollbar{display:none}
+  .ls-it{flex:none;width:auto;grid-template-columns:auto;padding:10px 14px;scroll-snap-align:center;border-color:rgba(255,255,255,.1)}
+  .ls-car{display:none}
+  .ls-n{font-size:17px;white-space:nowrap}
+  .ls-s{grid-column:1;font-size:11.5px;margin-top:4px}
+}
 /* ---------- deck cards v2: flat neon art on black slabs, glowing stat ---------- */
 .tc.r-leg{--c1:#3cffd0}.tc.r-epic{--c1:#b98cff}.tc.r-rare{--c1:#f2e3c2}
 .tc-f,.tc-b{background:#000;border:2px solid color-mix(in srgb,var(--c1) 55%,#1a0b3d);box-shadow:0 0 0 1px #000,0 0 18px color-mix(in srgb,var(--c1) 28%,transparent),0 24px 50px rgba(0,0,0,.6)}
@@ -1378,19 +1409,9 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
         <div class="case-art"><img src="img/bench.webp" alt="Illustration of a maker's workbench at night with a laptop, radio and film reel"></div>
         <p class="intro" style="margin:0">I build small products with Claude to stay close to the technology I manage. I write the spec and make the product calls, Claude writes the code, and I test it on my phone. Each one teaches me something about scoping, trade-offs or users that I take back to my day job. Pick one from the dock to open it.</p>
       </div>
-      <div class="desk" id="desk">
-        <div class="desk-bar" aria-hidden="true"><span><img src="img/hs-mark-dark.svg" alt="">AI lab</span><span id="deskClock"></span></div>
-        <div class="adock" id="adock" role="toolbar" aria-label="Choose an experiment"></div>
-        <p class="rd" aria-hidden="true">Read down <svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
-        <div class="awin" id="awin" aria-live="polite"></div>
-      </div>
-      <div class="tease" id="tease">
-        <img src="img/game-teaser.webp" srcset="img/game-teaser-s.webp 800w, img/game-teaser.webp 1600w" sizes="(max-width:760px) 100vw, 1100px" alt="Key art for an upcoming game: mythic heroes with glowing tech gear under a full moon" loading="lazy" decoding="async">
-        <div class="tease-txt">
-          <span class="tease-pill">Coming soon</span>
-          <h3>Next experiment: a new game</h3>
-          <p>Old gods, new tech. My next build with AI.</p>
-        </div>
+      <div class="desk ls" id="desk">
+        <div class="ls-menu" id="lsMenu" role="tablist" aria-label="Choose an experiment"></div>
+        <div class="ls-view" id="lsView" role="tabpanel" aria-live="polite"></div>
       </div>
     </section>
   </div>
@@ -1497,38 +1518,33 @@ function route(){}
   addEventListener("scroll",upd,{passive:true}); upd();
 })();
 
-/* ---------- story content ---------- */
+/* ---------- AI lab: level select ---------- */
 (function(){
-  const dock=document.getElementById("adock"), win=document.getElementById("awin"), desk=document.getElementById("desk");
-  if(!dock) return;
-  const icon=b=>{ const c=IC[b.id]; return `<span class="ic${b.mark?" mark":""}" style="background:${b.ibg||c.bg}">${b.icon||c.svg}</span>`; };
-  dock.innerHTML=BUILDS.map((b,i)=>`${b.sep?'<span class="sep" aria-hidden="true"></span>':''}<button type="button" class="appi" data-i="${i}" aria-label="${b.n}">${icon(b)}<span class="tip">${b.n}</span></button>`).join("");
-  const btns=[...dock.querySelectorAll(".appi")];
+  const menu=document.getElementById("lsMenu"), view=document.getElementById("lsView"); if(!menu) return;
+  const LOCK='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  const items=BUILDS.concat([{id:"next",n:"Next game",s:"Coming soon",st:"lock",locked:true,prev:'<img src="img/game-teaser-s.webp" srcset="img/game-teaser-s.webp 800w, img/game-teaser.webp 1600w" sizes="(max-width:760px) 100vw, 700px" alt="Key art for an upcoming game: mythic heroes with glowing tech gear under a full moon">',tag:"Old gods, new tech.",d:"My next build with AI is a game. It is in the works, more soon.",pts:[],stack:[],cta:[]}]);
+  menu.innerHTML=items.map((b,i)=>`<button type="button" class="ls-it${b.locked?" locked":""}" role="tab" data-i="${i}" aria-selected="false"><span class="ls-car" aria-hidden="true">▶</span><span class="ls-n">${b.n}</span><span class="ls-s ${b.st}">${b.locked?LOCK:""}${b.s}</span></button>`).join("");
+  const btns=[...menu.querySelectorAll(".ls-it")];
+  function prevOf(b){ if(b.prev==="PHONE_SWI") return SWI_PHONE; if(b.prev) return b.prev; const c=IC[b.id]; return `<div class="poster" style="background:${c.bg}">${c.svg}</div>`; }
   function open(i,anim){
-    const b=BUILDS[i]; if(anim) track("AI lab: open app",{app:b.n});
-    btns.forEach((x,k)=>{ x.classList.toggle("on",k===i); x.setAttribute("aria-pressed",k===i); });
-    const prev=b.prev==="PHONE_SWI"?SWI_PHONE:b.prev||`<div class="poster" style="background:${IC[b.id].bg}">${IC[b.id].svg}</div>`;
-    win.innerHTML=`<div class="awin-bar"><span><i></i><i></i><i></i></span><b>${b.n}</b><span></span></div>
-      <div class="awin-body"><div>
-        <div class="aw-head">${icon(b)}<div><h3>${b.n}</h3><span class="aw-st ${b.st}">${b.s}</span></div></div>
+    const b=items[i]; if(anim&&window.track) track("AI lab: open app",{app:b.n});
+    btns.forEach((x,k)=>{ x.classList.toggle("on",k===i); x.setAttribute("aria-selected",k===i); x.tabIndex=k===i?0:-1; });
+    view.innerHTML=`<div class="aw-prev${b.prev==="PHONE_SWI"?" phone":""}${b.locked?" locked":""}">${prevOf(b)}${b.locked?`<span class="ls-lock">${LOCK}Coming soon</span>`:""}</div>
+      <div class="ls-txt"><h3>${b.n}</h3><span class="aw-st ${b.st}">${b.s}</span>
         <p class="aw-tag">${b.tag}</p><p class="aw-d">${b.d}</p>
-        <ul class="aw-pts">${b.pts.map(p=>`<li>${p}</li>`).join("")}</ul>
-        <div class="aw-stack">${b.stack.map(x=>`<span>${x}</span>`).join("")}</div>
-        ${b.cta.length?`<div class="aw-cta">${b.cta.map(([t,u],k)=>`<a ${k?'class="alt" ':''}href="${u}"${u.startsWith("http")?' target="_blank" rel="noopener"':''}>${t}</a>`).join("")}</div>`:""}
-      </div><div class="aw-prev${b.prev==="PHONE_SWI"?" phone":""}">${prev}</div></div>`;
-    if(anim && !reduce){
-      const br=btns[i].getBoundingClientRect(), wr=win.getBoundingClientRect();
-      win.style.setProperty("--ox",((br.left+br.width/2-wr.left)/wr.width*100).toFixed(1)+"%");
-      win.classList.remove("opening"); void win.offsetWidth; win.classList.add("opening");
-      btns[i].classList.remove("jump"); void btns[i].offsetWidth; btns[i].classList.add("jump");
+        ${b.pts.length?`<ul class="aw-pts">${b.pts.map(p=>`<li>${p}</li>`).join("")}</ul>`:""}
+        ${b.stack.length?`<div class="aw-stack">${b.stack.map(x=>`<span>${x}</span>`).join("")}</div>`:""}
+        ${b.cta.length?`<div class="aw-cta">${b.cta.map(([t,u],k)=>`<a ${k?'class="alt" ':''}href="${u}"${u.startsWith("http")?' target="_blank" rel="noopener"':''}>${t}</a>`).join("")}</div>`:""}</div>`;
+    if(anim&&!reduce){
+      view.querySelector(".aw-prev").animate([{opacity:0,transform:"scale(1.04)"},{opacity:1,transform:"none"}],{duration:420,easing:"cubic-bezier(.2,.8,.2,1)"});
+      view.querySelector(".ls-txt").animate([{opacity:0,transform:"translateY(12px)"},{opacity:1,transform:"none"}],{duration:380,delay:60,easing:"cubic-bezier(.2,.8,.2,1)",fill:"backwards"});
     }
+    if(anim&&innerWidth<=760) btns[i].scrollIntoView({block:"nearest",inline:"center",behavior:reduce?"auto":"smooth"});
   }
-  btns.forEach((x,i)=>x.addEventListener("click",()=>{ if(!x.classList.contains("on")) open(i,true); else { x.classList.remove("jump"); void x.offsetWidth; x.classList.add("jump"); } }));
-  dock.addEventListener("keydown",e=>{ const k=btns.indexOf(document.activeElement); if(k<0) return;
-    if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); const n=(k+(e.key==="ArrowRight"?1:-1)+btns.length)%btns.length; btns[n].focus(); } });
-  const clk=document.getElementById("deskClock");
-  const tick=()=>{ try{ clk.textContent=new Date().toLocaleString("en-GB",{timeZone:"Asia/Dubai",weekday:"short",hour:"2-digit",minute:"2-digit"}).replace(",",""); }catch(e){} };
-  tick(); setInterval(tick,30000);
+  btns.forEach((x,i)=>x.addEventListener("click",()=>{ if(!x.classList.contains("on")) open(i,true); }));
+  menu.addEventListener("keydown",e=>{ const k=btns.indexOf(document.activeElement); if(k<0) return;
+    const d={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key]; if(!d) return; e.preventDefault();
+    const n=(k+d+btns.length)%btns.length; btns[n].focus(); open(n,true); });
   open(0,false);
 })();
 const TICK=["Product manager, 0 to 1","Now: B2B 5G at Etisalat by e&","AI experiment: Dark Deco, a co-op game made with Claude","GeForce NOW, Jordan's first cloud gaming","UGaming: Low Latency or Your Money Back","eShop conversion 0.7% → 1.3%","Internet revenue +120%","Subscribers +300% via digital","0% instalments with Arab Bank","AI experiment: Should I Watch It?","Next: something futuristic"];
