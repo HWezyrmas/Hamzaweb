@@ -1695,6 +1695,8 @@ if(!reduce && "IntersectionObserver" in window){
   let mbT=0;
   function streak(){ if(reduce||!dealt) return; cards.forEach(c=>c.classList.remove("mb")); void reel.offsetWidth; cards.forEach(c=>c.classList.add("mb")); clearTimeout(mbT); mbT=setTimeout(()=>cards.forEach(c=>c.classList.remove("mb")),700); }
   const rvA=document.getElementById("rvAura");
+  const wakeDeck=()=>{ if(!document.hidden&&inView&&rvA&&rvA.paused&&!reduce){ const p=rvA.play(); if(p&&p.catch) p.catch(()=>{}); } };
+  document.addEventListener("visibilitychange",wakeDeck); addEventListener("pageshow",wakeDeck); addEventListener("focus",wakeDeck);
   function light(on){ if(reduce||!rvA) return; [rvA].forEach(v=>{ if(on){ if(v.preload!=="auto"){ v.preload="auto"; v.load(); } const p=v.play(); if(p&&p.catch) p.catch(()=>{}); } else v.pause(); }); reel.previousElementSibling.classList.toggle("lit",on); }
   function go(i,user){ const old=cur, fwd=((i-old)%N+N)%N; cur=(i%N+N)%N; if(fwd){ excite(fwd<=N/2?1:-1,user?1:.45); streak(); } layout(); feature(); if(user){ holdUntil=performance.now()+6000; if(window.track) track("Deck: view card",{card:cards[cur].dataset.card}); } }
   function tick(){ if(inView&&!document.hidden&&performance.now()>holdUntil) go(cur+1); }
@@ -1764,7 +1766,12 @@ if(!reduce && "IntersectionObserver" in window){
   place(); addEventListener("resize",place); addEventListener("load",place); setTimeout(place,1200); setTimeout(place,3000); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(place);
   if(reduce){ v.removeAttribute("autoplay"); v.pause(); return; }
   const play=()=>{ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); };
-  if("IntersectionObserver" in window) new IntersectionObserver(es=>{ es[0].isIntersecting?play():v.pause(); }).observe(hero); else play();
+  let seen=true;
+  if("IntersectionObserver" in window) new IntersectionObserver(es=>{ seen=es[0].isIntersecting; seen?play():v.pause(); }).observe(hero); else play();
+  /* browsers pause video in a background tab and do not resume it: restart when the page is back */
+  const wake=()=>{ if(!document.hidden&&seen&&v.paused) play(); };
+  document.addEventListener("visibilitychange",wake); addEventListener("pageshow",wake); addEventListener("focus",wake);
+  v.addEventListener("pause",()=>{ if(!document.hidden&&seen) setTimeout(wake,400); });
 })();
 /* ---------- deck background: a simulated holographic energy field (WebGL, low-res, paused off screen) ---------- */
 (function(){
