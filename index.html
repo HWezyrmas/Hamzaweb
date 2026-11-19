@@ -915,8 +915,8 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 @media (prefers-reduced-motion:reduce){.ddm,.ddm-card{transition:none}.ddm-play{animation:none}}
 .foot{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
 /* ---------- bottom tab bar, iOS style ---------- */
-.secnav{position:fixed;z-index:90;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;transform:translate(-50%,170%);transition:transform .45s cubic-bezier(.2,.9,.25,1)}
-.secnav.show{transform:translate(-50%,0)}
+.secnav{position:fixed;z-index:90;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;transform:translate(-50%,0);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility 0s linear .22s}
+.secnav.show{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .08s}
 .tb,.tb-talk{background:rgba(255,255,255,.26);-webkit-backdrop-filter:blur(14px) saturate(190%) brightness(1.06);backdrop-filter:blur(14px) saturate(190%) brightness(1.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),0 0 0 .5px rgba(20,10,60,.12),0 14px 36px rgba(20,10,60,.2)}
 .tb{position:relative;display:flex;padding:5px;border-radius:999px}
 .tb a{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:72px;height:56px;padding:0 10px;border-radius:999px;text-decoration:none;color:#2a2a33;font-family:var(--f-display);font-weight:600;font-size:11px;letter-spacing:.01em;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:color .25s,transform .15s}
@@ -993,7 +993,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
   .h-me-m{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:14px;border:2px solid var(--mint);box-shadow:7px 7px 0 var(--uv);margin:4px 7px 0 0;animation:cardIn 1s .15s cubic-bezier(.2,.8,.2,1) both}
   .h-copy{padding-top:100px!important}
 }
-@media (max-width:440px){.secnav{left:8px;right:8px;transform:translateY(170%);gap:6px}.secnav.show{transform:none}.tb{flex:1;min-width:0}.tb a{flex:1 1 0;min-width:0!important;padding:0 2px}.tb a span{overflow:hidden;text-overflow:clip;max-width:100%}.tb-talk{flex:none}}
+@media (max-width:440px){.secnav{left:8px;right:8px;transform:none;gap:6px}.secnav.show{transform:none}.tb{flex:1;min-width:0}.tb a{flex:1 1 0;min-width:0!important;padding:0 2px}.tb a span{overflow:hidden;text-overflow:clip;max-width:100%}.tb-talk{flex:none}}
 /* ---------- case images: instant blurred placeholder, holographic reveal ---------- */
 .cs-hero::before{content:"";position:absolute;inset:-20px;background:var(--ph) center/cover no-repeat;filter:blur(18px) saturate(1.2);transform:scale(1.1);z-index:0}
 .cs-hero img{z-index:0;opacity:0;transition:opacity .2s}
@@ -1134,6 +1134,19 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
   .ls-n{font-size:17px;white-space:nowrap}
   .ls-s{grid-column:1;font-size:11.5px;margin-top:4px}
 }
+/* ---------- bottom menu: CRT power-on ---------- */
+.secnav.crt .tb,.secnav.crt .tb-talk{animation:crtOn .62s cubic-bezier(.2,.8,.2,1) both}
+.secnav.crt .tb-talk{animation-delay:.12s}
+.secnav.crt .tb::after,.secnav.crt .tb-talk::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;background:linear-gradient(180deg,#e9fff9,#3cffd0 50%,#e9fff9);box-shadow:0 0 10px 2px rgba(60,255,208,.9),0 0 34px 6px rgba(60,255,208,.45);animation:crtFlash .62s ease-out both}
+.secnav.crt .tb-talk{position:relative}
+.secnav.crt .tb-talk::after{animation-delay:.12s}
+.secnav.crt .tb a{animation:crtIcon .5s steps(1,end) both}
+.secnav.crt .tb a:nth-of-type(1){animation-delay:.32s}.secnav.crt .tb a:nth-of-type(2){animation-delay:.37s}.secnav.crt .tb a:nth-of-type(3){animation-delay:.42s}.secnav.crt .tb a:nth-of-type(4){animation-delay:.47s}.secnav.crt .tb a:nth-of-type(5){animation-delay:.52s}
+.secnav.crt .tb-ind{animation:crtIcon .5s steps(1,end) .56s both}
+@keyframes crtOn{0%{transform:scale(.04,.04);opacity:0}8%{transform:scale(.04,.04);opacity:1}30%{transform:scale(1.02,.05)}55%{transform:scale(1,1.12)}68%{transform:scale(1,.95)}80%{transform:scale(1,1.02)}100%{transform:none}}
+@keyframes crtFlash{0%,30%{opacity:1}55%{opacity:.85}72%{opacity:.25}78%{opacity:.5}100%{opacity:0}}
+@keyframes crtIcon{0%{opacity:0}20%{opacity:1}35%{opacity:.15}50%{opacity:1}62%{opacity:.4}75%,100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.secnav.crt *,.secnav.crt *::after{animation:none!important}}
 /* ---------- deck cards v2: flat neon art on black slabs, glowing stat ---------- */
 .tc.r-leg{--c1:#3cffd0}.tc.r-epic{--c1:#b98cff}.tc.r-rare{--c1:#f2e3c2}
 .tc-f,.tc-b{background:#000;border:2px solid color-mix(in srgb,var(--c1) 55%,#1a0b3d);box-shadow:0 0 0 1px #000,0 0 18px color-mix(in srgb,var(--c1) 28%,transparent),0 24px 50px rgba(0,0,0,.6)}
@@ -1525,7 +1538,9 @@ function route(){}
   const secs=links.map(l=>document.getElementById(l.getAttribute("href").slice(1)));
   function upd(){
     const cover=document.querySelector(".cover").getBoundingClientRect();
-    nav.classList.toggle("show", cover.bottom<60);
+    const on=cover.bottom<60, was=nav.classList.contains("show");
+    nav.classList.toggle("show", on);
+    if(on&&!was&&!reduce){ nav.classList.remove("crt"); void nav.offsetWidth; nav.classList.add("crt"); clearTimeout(nav._crt); nav._crt=setTimeout(()=>nav.classList.remove("crt"),1100); }
     let cur=null; secs.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top < innerHeight*.35) cur=i; });
     links.forEach((l,i)=>l.classList.toggle("active", i===cur));
     const ind=document.getElementById("tbInd"), a=nav.querySelector(".tb a.active");
