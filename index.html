@@ -1153,8 +1153,8 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 .h-fx{position:absolute;inset:0;pointer-events:none}
 .h-fx>*{position:absolute;display:block;left:var(--cx);top:var(--cy);width:var(--cw);height:var(--ch)}
 .h-fx.paused *{animation-play-state:paused}
-/* hero: light splash igniting the headline from behind, its floor line under the last line */
-.h-ignite{position:absolute;z-index:3;pointer-events:none;left:var(--ix,-9999px);top:var(--iy,0);width:var(--iw,600px);height:auto;mix-blend-mode:screen;opacity:.9;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 45%,transparent 56%);mask-image:linear-gradient(180deg,#000 0,#000 45%,transparent 56%)}
+/* hero: light splash spread softly across the whole header */
+.h-ignite{position:absolute;z-index:1;pointer-events:none;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;mix-blend-mode:screen;opacity:.4;filter:saturate(.85);-webkit-mask-image:radial-gradient(120% 95% at 50% 60%,#000 35%,rgba(0,0,0,.5) 70%,transparent 100%);mask-image:radial-gradient(120% 95% at 50% 60%,#000 35%,rgba(0,0,0,.5) 70%,transparent 100%)}
 .h-title{text-shadow:0 2px 6px rgba(6,3,26,.55),0 0 26px rgba(6,3,26,.5)}
 @media (prefers-reduced-motion:reduce){.h-ignite{display:none}}
 /* neon wash: the cut-out neon-lit version fades in over the photo and back, like a light change */
@@ -1793,7 +1793,7 @@ if(!reduce && "IntersectionObserver" in window){
 /* hero splash: sits behind the headline, plays only while the hero is on screen */
 (function(){ const v=document.getElementById("hSplash"), hero=document.getElementById("hero"); if(!v||!hero) return;
   const t=document.getElementById("hTitle");
-  function place(){ if(!t) return; const h=hero.getBoundingClientRect(), r=t.getBoundingClientRect(), w=Math.max(r.width*1.45,320);
+  function place(){ return; const h=hero.getBoundingClientRect(), r=t.getBoundingClientRect(), w=Math.max(r.width*1.45,320);
     v.style.setProperty("--iw",w+"px"); v.style.setProperty("--ix",(r.left-h.left+r.width/2-w/2)+"px"); v.style.setProperty("--iy",(r.bottom-h.top-w*.47)+"px"); }
   place(); addEventListener("resize",place); addEventListener("load",place); setTimeout(place,1200); setTimeout(place,3000); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(place);
   if(reduce){ v.removeAttribute("autoplay"); v.pause(); return; }
