@@ -1193,6 +1193,7 @@ html.intro-lock,html.intro-lock body,html.ddm-lock,html.ddm-lock body{overflow:h
 </style>
 <script>try{if(localStorage.getItem("hsIntroSeen")==="1")document.documentElement.classList.add("intro-seen")}catch(e){}</script>
 <style>html.intro-seen #intro{opacity:0!important;pointer-events:none}</style>
+<style>html{background:#06031a}</style>
 </head>
 <body class="light">
 <div class="hsi" id="intro" aria-hidden="true"><div class="intro-stage" id="introStage"></div><div class="intro-flash" id="introFlash"></div><button type="button" class="intro-skip" id="introSkip">Skip</button></div>
@@ -1991,6 +1992,7 @@ if(window.Lenis && !reduce && !LITE){ try{ lenis=new Lenis({lerp:.09, wheelMulti
 document.addEventListener("click",e=>{
   const a=e.target.closest('a[href^="#"]'); if(!a) return; const id=a.getAttribute("href").slice(1); if(!id) return;
   let y=HS.targetY(id); if(y===null){ const el=document.getElementById(id); if(!el) return; y=el.getBoundingClientRect().top+scrollY-60; }
+  if(id==="hero"||id==="top") y=0; y=Math.max(0,Math.min(y,document.documentElement.scrollHeight-innerHeight));
   e.preventDefault(); history.replaceState(null,"","#"+id);
   lenis ? lenis.scrollTo(y,{duration:1.4}) : scrollTo({top:y,behavior:reduce?"auto":"smooth"});
 });
